@@ -1,6 +1,7 @@
 const database = require("../db.js")
 
 const signIn = async (req,res)=>{
+    console.log(req.body)
     try{
         const result = await database.query('SELECT * FROM "user" WHERE "email" = $1',[req.body.email])
         

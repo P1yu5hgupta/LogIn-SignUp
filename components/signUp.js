@@ -7,81 +7,73 @@ export default class signUp extends Component{
     constructor(){
         super();
         this.state={
-            fname: '',
-            lname: '',
-            email: '',
-            password: '',
-            emailErr: '',
-            fnameErr: '',
-            passErr: '',
-            lnameErr: '',
+            fname : {
+                value : '',
+                errMsg : '',
+                placeholder : 'First Name',
+            },
+            lname : {
+                value : '',
+                errMsg : '',
+                placeholder : 'Last Name',
+            },
+            email : {
+                value : '',
+                errMsg : '',
+                placeholder : 'Email',
+            },
+            password : {
+                value : '',
+                errMsg : '',
+                placeholder : 'Password',
+                secureText : true
+            }
         }
         this.baseState=this.state
-        this.inputFields = [
-            {
-                fieldName: 'fname',
-                placeholder: 'First Name',
-                err: 'fnameErr'
-            },
-            {
-                fieldName: 'lname',
-                placeholder: 'Last Name',
-                err: 'lnameErr'
-            },
-            {
-                fieldName: 'email',
-                placeholder: 'Email',
-                err: 'emailErr'
-            },
-            {
-                fieldName: 'password',
-                placeholder: 'Password',
-                err: 'passErr',
-                textTypePass : true
-            }
-        ]
+    }
+    handleChange = (key,text) =>{
+        this.setState({[key] :{ ... this.state.key, value : text, errMsg : '' }})
     }
     isValidFields = () =>{
         let flag=true
         let nameRegex=/^[A-Za-z\s ]+$/;
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-            
-        if(this.state.fname.length==0){
-            this.setState({fnameErr : "First Name is mandatory!!!"})
+
+        if(this.state.fname.value.length==0){
+            this.setState({fname: {... this.state.fname, errMsg : "First Name is mandatory!!!"}})
             flag=false
         }
-        else if(!nameRegex.test(this.state.fname)){
-            this.setState({fnameErr : "Must be Alphabatic!!!"})
+        else if(!nameRegex.test(this.state.fname.value)){
+            this.setState({fname: {... this.state.fname, errMsg : "Must be Alphabatic!!!"}})
             flag=false
         }
 
-        if(this.state.lname.length==0){
-            this.setState({lnameErr : "Last Name is mandatory!!!"})
+        if(this.state.lname.value.length==0){
+            this.setState({lname: {... this.state.lname, errMsg : "Last Name is mandatory!!!"}})
             flag=false
         }
-        else if(!nameRegex.test(this.state.lname)){
-            this.setState({lnameErr : "Must be Alphabatic!!!"})
-            flag=false
-        }
-
-        if(this.state.password.length<6){
-            this.setState({passErr : "Password must be of atleast 6 characters!!!!"})
+        else if(!nameRegex.test(this.state.lname.value)){
+            this.setState({lname: {... this.state.lname, errMsg : "Must be Alphabatic!!!"}})
             flag=false
         }
 
-        if(this.state.email.length==0){
-            this.setState({emailErr : "Email is mandatory!!!"})
-            flag=false
-        }
-        else if(!mailRegex.test(this.state.email)){
-            this.setState({emailErr : "Invalid email address"})
+        if(this.state.password.value.length<6){
+            this.setState({password: {... this.state.password, errMsg : "Password must be of atleast 6 characters!!!!"}})
             flag=false
         }
 
-        return flag        
+        if(this.state.email.value.length==0){
+            this.setState({email: {... this.state.email, errMsg : "Email is mandatory!!!"}})
+            flag=false
+        }
+        else if(!mailRegex.test(this.state.email.value)){
+            this.setState({email: {... this.state.email, errMsg : "Invalid Email Address!!!"}})
+            flag=false
+        }
+
+        return flag 
     }
     submit = async () =>{
-        console.log(this.state)
         if(this.isValidFields()){
             try{
                 const response = await fetch('http://192.168.1.43:8000/signup',{
@@ -91,16 +83,15 @@ export default class signUp extends Component{
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        fname : this.state.fname,
-                        lname : this.state.lname,
-                        email : this.state.email,
-                        password : this.state.password
+                        fname : this.state.fname.value,
+                        lname : this.state.lname.value,
+                        email : this.state.email.value,
+                        password : this.state.password.value
                     })
                 })
                 const data = await response.json()
                 alert(data.message)
                 if(data.status){
-                    console.log(this.baseState)
                     this.setState(this.baseState)
                     this.props.navigation.navigate('SignIn')
                 }
@@ -127,7 +118,8 @@ export default class signUp extends Component{
     
                 <View style={styles.form}>
                     {
-                        this.inputFields.map( (inputObj) => {
+                        Object.keys(this.state).map( (key) => {
+                            const inputObj = this.state[key]
                             return(
                                 <View>
                                     <View style={styles.inputView}>
@@ -135,16 +127,14 @@ export default class signUp extends Component{
                                         style={styles.inputBox}
                                         placeholder = {inputObj.placeholder}
                                         placeholderTextColor = "gray"
-                                        onChangeText = {(text)=>{
-                                            this.setState({ [inputObj.fieldName] : text })
-                                            this.setState({ [inputObj.err] : '' })
-                                        }}
-                                        secureTextEntry = {inputObj.textTypePass}
+                                        onChangeText = {(text) => this.handleChange(key,text)}
+                                        value={inputObj.value}
+                                        secureTextEntry = {inputObj.secureText}
                                     />
                                     </View>
 
                                     <Text style={styles.errorMsg}>
-                                        {this.state[inputObj.err]}
+                                        {inputObj.errMsg}
                                     </Text>
                                 </View>
                             )
@@ -160,7 +150,10 @@ export default class signUp extends Component{
 
                 <Text style={styles.signUpText}>
                     Already have an account?  
-                    <Text style={styles.innerText} onPress={()=>{this.props.navigation.navigate('SignIn')}}>
+                    <Text style={styles.innerText} onPress={()=>{
+                        this.setState(this.baseState)
+                        this.props.navigation.navigate('SignIn')  
+                    }}>
                         LogIn!
                     </Text>
                 </Text>
@@ -200,8 +193,6 @@ const styles = StyleSheet.create({
         color: 'white'
     },
     inputView:{
-        flexDirection:'row',
-        flexWrap:'wrap',
         marginTop: 20,
         borderBottomColor: 'gray',
         borderBottomWidth: 1,

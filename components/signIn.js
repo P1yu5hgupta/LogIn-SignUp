@@ -6,49 +6,58 @@ export default class signIn extends Component{
     constructor(){
         super();
         this.state={
-            email: '',
-            password: '',
-            emailErr: '',
-            passErr: ''
-        }
-        this.baseState=this.state
-        this.inputFields = [
-            {
-                fieldName: 'email',
-                placeholder: 'Email',
-                err: 'emailErr',
+            email : {
+                value : '',
+                errMsg : '',
+                placeholder : 'Email',
                 imageURL: require('../assets/signIn/personLogo.png'),
                 style: 'personLogo'
             },
-            {
-                fieldName: 'password',
-                placeholder: 'Password',
-                err: 'passErr',
+            password : {
+                value : '',
+                errMsg : '',
+                placeholder : 'Password',
                 imageURL: require('../assets/signIn/lockLogo.png'),
                 style: 'lockLogo',
-                textTypePass: true
+                secureText : true
             }
-        ]
+        }
+        this.baseState=this.state
+    }
+    handleChange = (key,text) =>{
+        this.setState((state)=>{
+            state[key].value=text
+            state[key].errMsg=''
+            return state
+        })
     }
     isValidFields = () =>{
         let flag=true
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 
-        if(this.state.password.length==0){
-            this.setState({passErr : "Password is mandatory!!!!"})
+        if(this.state.password.value.length==0){
+            this.setState((state)=>{
+                state.password.errMsg = "Password Required!!!"
+            })
             flag=false
         }
 
-        if(this.state.email.length==0){
-            this.setState({emailErr : "Email is mandatory!!!"})
+        if(this.state.email.value.length==0){
+            this.setState((state)=>{
+                state.email.errMsg = "Email is mandatory!!!"
+                return state
+            })
             flag=false
         }
-        else if(!mailRegex.test(this.state.email)){
-            this.setState({emailErr : "Invalid email address"})
+        else if(!mailRegex.test(this.state.email.value)){
+            this.setState((state)=>{
+                state.email.errMsg = "Invalid Email Address!!!"
+                return state
+            })
             flag=false
         }
 
-        return flag        
+        return flag       
     }
     submit = async () => {
         if(this.isValidFields()){
@@ -60,10 +69,8 @@ export default class signIn extends Component{
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        fname : this.state.fname,
-                        lname : this.state.lname,
-                        email : this.state.email,
-                        password : this.state.password
+                        email : this.state.email.value,
+                        password : this.state.password.value
                     })
                 })
                 let data = await response.json()
@@ -71,7 +78,7 @@ export default class signIn extends Component{
                     alert(data.message)
                 }
                 else{
-                    this.setState(this.baseState)
+                    await this.setState(this.baseState)
                     this.props.navigation.navigate("Profile",{
                         fname : data.firstName,
                         lname : data.lastName,
@@ -100,8 +107,8 @@ export default class signIn extends Component{
     
                 <View style={styles.form}>
                     {
-                        this.inputFields.map( (inputObj) => {
-                            console.log(inputObj)
+                        Object.keys(this.state).map( (key) => {
+                            const inputObj=this.state[key]
                             return(
                                 <View>
                                     <View style={styles.inputView}>
@@ -113,16 +120,13 @@ export default class signIn extends Component{
                                             style={styles.inputBox}
                                             placeholder= {inputObj.placeholder}
                                             placeholderTextColor = "white"
-                                            onChangeText = {(text)=>{
-                                                this.setState({ [inputObj.fieldName] : text })
-                                                this.setState({ [inputObj.err] : "" })
-                                            }}
-                                            secureTextEntry = {inputObj.textTypePass}
+                                            onChangeText = {(text)=>this.handleChange(key,text)}
+                                            secureTextEntry = {inputObj.secureText}
                                         />
                                     </View>
                                     
                                     <Text style={styles.errorMsg}>
-                                        {this.state[inputObj.err]}
+                                        {inputObj.errMsg}
                                     </Text>
                                 </View>
                             )
@@ -138,7 +142,10 @@ export default class signIn extends Component{
                 
                 <Text style={styles.signUpText}>
                     You don't have any account! 
-                    <Text style={styles.innerText} onPress={()=>{this.props.navigation.navigate('SignUp')}}>
+                    <Text style={styles.innerText} onPress={()=>{
+                        this.setState(this.baseState)
+                        this.props.navigation.navigate('SignUp')
+                    }}>
                         Sign Up here
                     </Text>
                 </Text>
