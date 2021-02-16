@@ -36,7 +36,8 @@ export default class signUp extends Component{
             {
                 fieldName: 'password',
                 placeholder: 'Password',
-                err: 'passErr'
+                err: 'passErr',
+                textTypePass : true
             }
         ]
     }
@@ -138,6 +139,7 @@ export default class signUp extends Component{
                                             this.setState({ [inputObj.fieldName] : text })
                                             this.setState({ [inputObj.err] : '' })
                                         }}
+                                        secureTextEntry = {inputObj.textTypePass}
                                     />
                                     </View>
 

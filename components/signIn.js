@@ -25,7 +25,8 @@ export default class signIn extends Component{
                 placeholder: 'Password',
                 err: 'passErr',
                 imageURL: require('../assets/signIn/lockLogo.png'),
-                style: 'lockLogo'
+                style: 'lockLogo',
+                textTypePass: true
             }
         ]
     }
@@ -116,6 +117,7 @@ export default class signIn extends Component{
                                                 this.setState({ [inputObj.fieldName] : text })
                                                 this.setState({ [inputObj.err] : "" })
                                             }}
+                                            secureTextEntry = {inputObj.textTypePass}
                                         />
                                     </View>
                                     
