@@ -6,28 +6,30 @@ export default class signIn extends Component{
     constructor(){
         super();
         this.state={
-            email : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Email',
-                imageURL: require('../assets/signIn/personLogo.png'),
-                style: 'personLogo'
-            },
-            password : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Password',
-                imageURL: require('../assets/signIn/lockLogo.png'),
-                style: 'lockLogo',
-                secureText : true
+            userDetails : {
+                email : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'Email',
+                    imageURL: require('../assets/signIn/personLogo.png'),
+                    style: 'personLogo'
+                },
+                password : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'Password',
+                    imageURL: require('../assets/signIn/lockLogo.png'),
+                    style: 'lockLogo',
+                    secureText : true
+                }
             }
         }
         this.baseState=this.state
     }
     handleChange = (key,text) =>{
         this.setState((state)=>{
-            state[key].value=text
-            state[key].errMsg=''
+            state.userDetails[key].value=text
+            state.userDetails[key].errMsg=''
             return state
         })
     }
@@ -35,23 +37,23 @@ export default class signIn extends Component{
         let flag=true
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 
-        if(this.state.password.value.length==0){
+        if(this.state.userDetails.password.value.length==0){
             this.setState((state)=>{
-                state.password.errMsg = "Password Required!!!"
+                state.userDetails.password.errMsg = "Password Required!!!"
             })
             flag=false
         }
 
-        if(this.state.email.value.length==0){
+        if(this.state.userDetails.email.value.length==0){
             this.setState((state)=>{
-                state.email.errMsg = "Email is mandatory!!!"
+                state.userDetails.email.errMsg = "Email is mandatory!!!"
                 return state
             })
             flag=false
         }
-        else if(!mailRegex.test(this.state.email.value)){
+        else if(!mailRegex.test(this.state.userDetails.email.value)){
             this.setState((state)=>{
-                state.email.errMsg = "Invalid Email Address!!!"
+                state.userDetails.email.errMsg = "Invalid Email Address!!!"
                 return state
             })
             flag=false
@@ -69,8 +71,8 @@ export default class signIn extends Component{
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        email : this.state.email.value,
-                        password : this.state.password.value
+                        email : this.state.userDetails.email.value,
+                        password : this.state.userDetails.password.value
                     })
                 })
                 let data = await response.json()
@@ -107,8 +109,8 @@ export default class signIn extends Component{
     
                 <View style={styles.form}>
                     {
-                        Object.keys(this.state).map( (key) => {
-                            const inputObj=this.state[key]
+                        Object.keys(this.state.userDetails).map( (key) => {
+                            const inputObj=this.state.userDetails[key]
                             return(
                                 <View>
                                     <View style={styles.inputView}>

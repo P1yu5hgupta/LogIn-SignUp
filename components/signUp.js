@@ -7,67 +7,94 @@ export default class signUp extends Component{
     constructor(){
         super();
         this.state={
-            fname : {
-                value : '',
-                errMsg : '',
-                placeholder : 'First Name',
-            },
-            lname : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Last Name',
-            },
-            email : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Email',
-            },
-            password : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Password',
-                secureText : true
+            userDetails: {
+                fname : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'First Name',
+                },
+                lname : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'Last Name',
+                },
+                email : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'Email',
+                },
+                password : {
+                    value : '',
+                    errMsg : '',
+                    placeholder : 'Password',
+                    secureText : true
+                }
             }
         }
         this.baseState=this.state
     }
     handleChange = (key,text) =>{
-        this.setState({[key] :{ ... this.state.key, value : text, errMsg : '' }})
+        this.setState((state)=>{
+            state.userDetails[key].value=text
+            state.userDetails[key].errMsg=''
+            return state
+        })
     }
     isValidFields = () =>{
         let flag=true
         let nameRegex=/^[A-Za-z\s ]+$/;
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 
-        if(this.state.fname.value.length==0){
-            this.setState({fname: {... this.state.fname, errMsg : "First Name is mandatory!!!"}})
+        if(this.state.userDetails.fname.value.length==0){
+            this.setState((state)=>{
+                state.userDetails.fname.errMsg = "First Name is mandatory!!!"
+                return state
+            })
             flag=false
         }
-        else if(!nameRegex.test(this.state.fname.value)){
-            this.setState({fname: {... this.state.fname, errMsg : "Must be Alphabatic!!!"}})
-            flag=false
-        }
-
-        if(this.state.lname.value.length==0){
-            this.setState({lname: {... this.state.lname, errMsg : "Last Name is mandatory!!!"}})
-            flag=false
-        }
-        else if(!nameRegex.test(this.state.lname.value)){
-            this.setState({lname: {... this.state.lname, errMsg : "Must be Alphabatic!!!"}})
+        else if(!nameRegex.test(this.state.userDetails.fname.value)){
+            this.setState((state)=>{
+                state.userDetails.fname.errMsg = "Must be Alphabatic!!!"
+                return state
+            })
             flag=false
         }
 
-        if(this.state.password.value.length<6){
-            this.setState({password: {... this.state.password, errMsg : "Password must be of atleast 6 characters!!!!"}})
+        if(this.state.userDetails.lname.value.length==0){
+            this.setState((state)=>{
+                state.userDetails.lname.errMsg = "Last Name is mandatory!!!"
+                return state
+            })
+            flag=false
+        }
+        else if(!nameRegex.test(this.state.userDetails.lname.value)){
+            this.setState((state)=>{
+                state.userDetails.lname.errMsg = "Must be Alphabatic!!!"
+                return state
+            })
             flag=false
         }
 
-        if(this.state.email.value.length==0){
-            this.setState({email: {... this.state.email, errMsg : "Email is mandatory!!!"}})
+        if(this.state.userDetails.password.value.length<6){
+            this.setState((state)=>{
+                state.userDetails.password.errMsg = "Password must be of atleast 6 characters!!!!"
+                return state
+            })
             flag=false
         }
-        else if(!mailRegex.test(this.state.email.value)){
-            this.setState({email: {... this.state.email, errMsg : "Invalid Email Address!!!"}})
+
+        if(this.state.userDetails.email.value.length==0){
+            this.setState((state)=>{
+                state.userDetails.email.errMsg = "Email is mandatory!!!"
+                return state
+            })
+            flag=false
+        }
+        else if(!mailRegex.test(this.state.userDetails.email.value)){
+            this.setState((state)=>{
+                state.userDetails.email.errMsg = "Invalid Email Address!!!"
+                return state
+            })
             flag=false
         }
 
@@ -83,10 +110,10 @@ export default class signUp extends Component{
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        fname : this.state.fname.value,
-                        lname : this.state.lname.value,
-                        email : this.state.email.value,
-                        password : this.state.password.value
+                        fname : this.state.userDetails.fname.value,
+                        lname : this.state.userDetails.lname.value,
+                        email : this.state.userDetails.email.value,
+                        password : this.state.userDetails.password.value
                     })
                 })
                 const data = await response.json()
@@ -118,8 +145,8 @@ export default class signUp extends Component{
     
                 <View style={styles.form}>
                     {
-                        Object.keys(this.state).map( (key) => {
-                            const inputObj = this.state[key]
+                        Object.keys(this.state.userDetails).map( (key) => {
+                            const inputObj = this.state.userDetails[key]
                             return(
                                 <View>
                                     <View style={styles.inputView}>
