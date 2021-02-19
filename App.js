@@ -6,6 +6,7 @@ import Home from './components/home'
 import SignIn from './components/signIn'
 import SignUp from './components/signUp'
 import Profile from './components/profile'
+import Practice from './components/practice'
 
 const Drawer = createDrawerNavigator();
 
@@ -17,7 +18,7 @@ export default class App extends Component {
                   <Drawer.Screen name="Home" component={Home} />
                   <Drawer.Screen name="SignIn" component={SignIn} />
                   <Drawer.Screen name="SignUp" component={SignUp} />
-                  <Drawer.Screen name="Profile" component={Profile} />
+                  <Drawer.Screen name="Profile" component={Practice} />
               </Drawer.Navigator>
           </NavigationContainer>
         );

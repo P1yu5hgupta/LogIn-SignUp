@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TextInput, Image,TouchableOpacity } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
+import Practice from './practice'
 
 export default class signIn extends Component{
     constructor(){
         super();
-        this.state={
+        this.state = {
             userDetails : {
                 email : {
                     value : '',
@@ -24,7 +25,7 @@ export default class signIn extends Component{
                 }
             }
         }
-        this.baseState=this.state
+        this.baseState = this.state
     }
     handleChange = (key,text) =>{
         this.setState((state)=>{
@@ -39,7 +40,7 @@ export default class signIn extends Component{
 
         if(this.state.userDetails.password.value.length==0){
             this.setState((state)=>{
-                state.userDetails.password.errMsg = "Password Required!!!"
+                state.userDetails.password.errMsg = "Password Required!!!" 
             })
             flag=false
         }
@@ -62,6 +63,7 @@ export default class signIn extends Component{
         return flag       
     }
     submit = async () => {
+        console.log(this.baseState)
         if(this.isValidFields()){
             try{
                 const response = await fetch('http://192.168.1.43:8000/signin',{
@@ -80,10 +82,9 @@ export default class signIn extends Component{
                     alert(data.message)
                 }
                 else{
-                    await this.setState(this.baseState)
-                    this.props.navigation.navigate("Profile",{
-                        fname : data.firstName,
-                        lname : data.lastName,
+                    this.setState(this.baseState,()=>{
+                        this.props.navigation.navigate("Profile")
+                        // <Practice/>
                     })
                 }
             }
@@ -124,6 +125,7 @@ export default class signIn extends Component{
                                             placeholderTextColor = "white"
                                             onChangeText = {(text)=>this.handleChange(key,text)}
                                             secureTextEntry = {inputObj.secureText}
+                                            value = {inputObj.value}
                                         />
                                     </View>
                                     
@@ -145,8 +147,9 @@ export default class signIn extends Component{
                 <Text style={styles.signUpText}>
                     You don't have any account! 
                     <Text style={styles.innerText} onPress={()=>{
-                        this.setState(this.baseState)
-                        this.props.navigation.navigate('SignUp')
+                        this.setState(this.baseState,()=>{
+                            this.props.navigation.navigate('SignUp')
+                        })
                     }}>
                         Sign Up here
                     </Text>

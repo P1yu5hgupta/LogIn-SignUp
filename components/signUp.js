@@ -119,8 +119,7 @@ export default class signUp extends Component{
                 const data = await response.json()
                 alert(data.message)
                 if(data.status){
-                    this.setState(this.baseState)
-                    this.props.navigation.navigate('SignIn')
+                    this.setState(this.baseState,()=>{this.props.navigation.navigate('SignIn')})
                 }
             }
             catch(err){
@@ -178,8 +177,7 @@ export default class signUp extends Component{
                 <Text style={styles.signUpText}>
                     Already have an account?  
                     <Text style={styles.innerText} onPress={()=>{
-                        this.setState(this.baseState)
-                        this.props.navigation.navigate('SignIn')  
+                        this.setState(this.baseState,()=>{this.props.navigation.navigate('SignIn')})  
                     }}>
                         LogIn!
                     </Text>
