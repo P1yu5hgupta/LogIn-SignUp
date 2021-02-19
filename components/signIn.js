@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View, TextInput, Image,TouchableOpacity } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
-import Practice from './practice'
+import { ScrollView } from 'react-native-gesture-handler'
 
 export default class signIn extends Component{
     constructor(){
@@ -27,6 +26,7 @@ export default class signIn extends Component{
         }
         this.baseState = this.state
     }
+    
     handleChange = (key,text) =>{
         this.setState((state)=>{
             state.userDetails[key].value=text
@@ -34,6 +34,7 @@ export default class signIn extends Component{
             return state
         })
     }
+
     isValidFields = () =>{
         let flag=true
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/

@@ -1,5 +1,5 @@
 import React , { useState ,useEffect }from 'react'
-import { View , Text, StyleSheet,Image, Linking, FlatList } from 'react-native'
+import { View , Text, StyleSheet,Image, Linking, FlatList, ActivityIndicator } from 'react-native'
 
 export default practice = () =>{
 
@@ -7,7 +7,6 @@ export default practice = () =>{
 
     const getData = async () =>{
         try{
-            changeState({...state,isLoading : true})
             const response = await fetch('https://randomuser.me/api/?seed=1&page='+state.page+'&results=20');
             const res = await response.json()
             changeState({
@@ -30,7 +29,7 @@ export default practice = () =>{
     }
 
     const handleRefresh = ()=>{
-        changeState({...state, page: 1})
+        changeState({...state, isLoading:true, page: 1})
     }
 
     // Rendering Views
@@ -65,11 +64,12 @@ export default practice = () =>{
     }
     const renderFooter = () =>{
         return (
-            <Text>
-                
-            </Text>
+            <View style={styles.container,{marginBottom:20}}>
+                <ActivityIndicator size="large" color="black" />
+            </View>
         );
     }
+
     return (
         <View style={styles.container}>
                 <FlatList
@@ -83,7 +83,7 @@ export default practice = () =>{
                     onRefresh = {handleRefresh}
                     refreshing = {state.isLoading}
                     onEndReached = {handleLoad}
-                    onEndReachedThreshold = {0.1}
+                    onEndReachedThreshold = {0.2}
                 />
         </View>
     )
@@ -94,7 +94,8 @@ const styles = StyleSheet.create({
         flex: 1,
         display : 'flex',
         flexDirection : 'row',
-        marginTop : 40,
+        justifyContent : 'center',
+        marginTop : 35,
     },
     listItem : {
         flexDirection : 'row',
