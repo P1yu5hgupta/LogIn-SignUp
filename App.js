@@ -13,15 +13,15 @@ const Drawer = createDrawerNavigator();
 export default class App extends Component {
     render(){
         return (
-        //   <NavigationContainer>
-        //       <Drawer.Navigator initialRouteName="Home">
-        //           <Drawer.Screen name="Home" component={Home} />
-        //           <Drawer.Screen name="SignIn" component={SignIn} />
-        //           <Drawer.Screen name="SignUp" component={SignUp} />
-        //           <Drawer.Screen name="Profile" component={Practice} />
-        //       </Drawer.Navigator>
-        //   </NavigationContainer>
-        <Practice/>
+          <NavigationContainer>
+              <Drawer.Navigator initialRouteName="Home">
+                  <Drawer.Screen name="Home" component={Home} />
+                  <Drawer.Screen name="SignIn" component={SignIn} />
+                  <Drawer.Screen name="SignUp" component={SignUp} />
+                  <Drawer.Screen name="Profile" component={Practice} />
+              </Drawer.Navigator>
+          </NavigationContainer>
+        // <Practice/>
         );
     }
 }
