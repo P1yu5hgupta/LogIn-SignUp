@@ -1,33 +1,41 @@
 import React , { useState ,useEffect }from 'react'
 import { View , Text, StyleSheet,Image, Linking, FlatList, ActivityIndicator } from 'react-native'
+import { AntDesign } from '@expo/vector-icons';
+
 
 export default practice = () =>{
 
+    // defining states
     const [state,changeState] = useState({data : [], isLoading : false, page: 1})
 
+    // http request to fetch user list
     const getData = async () =>{
         try{
             const response = await fetch('https://randomuser.me/api/?seed=1&page='+state.page+'&results=20');
-            const res = await response.json()
-            changeState({
+            let res = await response.json()
+            res=res.results
+            res=res.map(item => (
+                {...item,liked : false}
+            ))
+            changeState(prevState => ({
                 ... state,
-                data : state.page==1?  res.results : state.data.concat(res.results), 
+                data : prevState.page==1?  res : [...prevState.data,...res], 
                 isLoading: false,
-            })
+            }))
         }
         catch(err){
             console.log(err)
         }
     }
+
     // Event Handlers
     useEffect(()=>{
         getData()
     },[state.page])
-
+    
     const handleLoad = ()=>{
         changeState({...state, page: state.page+1})
     }
-
     const handleRefresh = ()=>{
         changeState({...state, isLoading:true, page: 1})
     }
@@ -43,7 +51,25 @@ export default practice = () =>{
                 <View style = {styles.userInfo}>
                     <Text style = {styles.userName}>{item.name.first}</Text>
                     <Text>{item.email}</Text>
-                </View>
+                </View> 
+                <AntDesign 
+                    name={item.liked ? 'heart':'hearto'} 
+                    size= {20} 
+                    style={styles.likeIcon}
+                    hitSlop={{top: 200, bottom: 200, left: 200, right: 200}}
+                    onPress = {()=>{
+                        changeState(prevState =>({
+                            ...prevState,
+                            data : prevState.data.map(userObj =>(
+                                userObj.email === item.email ? 
+                                {
+                                    ...userObj,
+                                    liked : !item.liked
+                                } : userObj
+                            ))
+                        }))
+                    }}
+                />
             </View>
         );
     }
@@ -122,6 +148,10 @@ const styles = StyleSheet.create({
         fontSize: 15,
         fontWeight: 'bold',
         color : 'gray'
+    },
+    likeIcon: {
+        flex: 1,
+        alignSelf : 'flex-end',
     },
     header : {
         flexDirection: 'row',
