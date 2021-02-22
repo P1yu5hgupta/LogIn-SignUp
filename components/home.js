@@ -1,7 +1,26 @@
 import React,{ Component } from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity, TouchableHighlight } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert, BackHandler } from 'react-native';
 
 export default class home extends Component{
+    
+    backButtonPressed = () =>{
+        Alert.alert('Heyy!!','You wanna exit??',[
+            {
+                text : 'Cancel',
+            },
+            {
+                text : 'Exit', onPress : () => BackHandler.exitApp()
+            }
+        ])
+        return true;
+    }
+
+    componentDidMount(){
+        BackHandler.addEventListener('hardwareBackPress', this.backButtonPressed)
+    }
+    componentWillUnmount(){
+        BackHandler.removeEventListener('hardwareBackPress',this.backButtonPressed)
+    }
     render(){
         return(
             <View style={styles.container}>

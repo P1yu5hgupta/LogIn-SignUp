@@ -5,7 +5,11 @@ import { ScrollView } from 'react-native-gesture-handler'
 export default class signIn extends Component{
     constructor(){
         super();
-        this.state = {
+        this.state = this.initialState
+    }
+    
+    get initialState() {
+        return {
             userDetails : {
                 email : {
                     value : '',
@@ -24,9 +28,7 @@ export default class signIn extends Component{
                 }
             }
         }
-        this.baseState = this.state
     }
-    
     handleChange = (key,text) =>{
         this.setState((state)=>{
             state.userDetails[key].value=text
@@ -83,9 +85,8 @@ export default class signIn extends Component{
                     alert(data.message)
                 }
                 else{
-                    this.setState(this.baseState,()=>{
-                        this.props.navigation.navigate("Profile")
-                        // <Practice/>
+                    this.setState(this.initialState,()=>{
+                        this.props.navigation.navigate("UserList")
                     })
                 }
             }
@@ -98,7 +99,7 @@ export default class signIn extends Component{
         return(
             <ScrollView style={styles.container}>
 
-                <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
+                <TouchableOpacity onPress={()=>{this.setState(this.initialState,()=>{this.props.navigation.goBack()})}}>
                     <Image 
                         style={styles.backIcon}
                         source={require('../assets/signIn/backLogo.png')}
@@ -148,7 +149,7 @@ export default class signIn extends Component{
                 <Text style={styles.signUpText}>
                     You don't have any account! 
                     <Text style={styles.innerText} onPress={()=>{
-                        this.setState(this.baseState,()=>{
+                        this.setState(this.initialState,()=>{
                             this.props.navigation.navigate('SignUp')
                         })
                     }}>

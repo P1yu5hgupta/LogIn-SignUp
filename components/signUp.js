@@ -6,7 +6,11 @@ import { ScrollView } from 'react-native-gesture-handler';
 export default class signUp extends Component{
     constructor(){
         super();
-        this.state={
+        this.state= this.initialState
+    }
+
+    get initialState(){
+        return {
             userDetails: {
                 fname : {
                     value : '',
@@ -31,7 +35,6 @@ export default class signUp extends Component{
                 }
             }
         }
-        this.baseState=this.state
     }
     handleChange = (key,text) =>{
         this.setState((state)=>{
@@ -119,7 +122,7 @@ export default class signUp extends Component{
                 const data = await response.json()
                 alert(data.message)
                 if(data.status){
-                    this.setState(this.baseState,()=>{this.props.navigation.navigate('SignIn')})
+                    this.setState(this.initialState,()=>{this.props.navigation.navigate('SignIn')})
                 }
             }
             catch(err){
@@ -131,7 +134,7 @@ export default class signUp extends Component{
         return(
             <ScrollView style={styles.container}>
                 
-                <TouchableOpacity onPress={()=>{this.props.navigation.goBack()}}>
+                <TouchableOpacity onPress={()=>{this.setState(this.initialState,()=>{this.props.navigation.goBack()})}}>
                     <Image 
                         style={styles.backIcon}
                         source={require('../assets/signIn/backLogo.png')}
@@ -177,7 +180,7 @@ export default class signUp extends Component{
                 <Text style={styles.signUpText}>
                     Already have an account?  
                     <Text style={styles.innerText} onPress={()=>{
-                        this.setState(this.baseState,()=>{this.props.navigation.navigate('SignIn')})  
+                        this.setState(this.initialState,()=>{this.props.navigation.navigate('SignIn')})  
                     }}>
                         LogIn!
                     </Text>
