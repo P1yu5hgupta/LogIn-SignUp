@@ -1,159 +1,32 @@
 import React , { useState ,useEffect, isValidElement } from 'react'
-import { View , Text, StyleSheet,Image, FlatList, ActivityIndicator } from 'react-native'
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
-import { EvilIcons } from '@expo/vector-icons'; 
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler';
-import { FontAwesome } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import config from '../../utils/config'
+import { TextInput,View , Text, StyleSheet,Image, FlatList } from 'react-native'
+import { FontAwesome,EvilIcons,AntDesign } from '@expo/vector-icons';
 import styles from './styles'
+import {
+    getFromStorage,
+    handleRefresh,
+    getComment,
+    sendComment,
+    renderView,
+    seperatorLine,
+    renderFinished,
+    renderFooter
+} from './utilFunctions'
 
-export default userList = ({route,navigation}) =>{
+const singleFeed = ({route,navigation}) =>{
 
     // defining states
     const [state,changeState] = useState({comments : [], isLoading : false, page: 1,moreAvailable : true })
     const [commentText,updateComment] = useState('')
 
     let userName,userEmail,userId;
-    const getFromStorage = async () => {
-        userEmail = await AsyncStorage.getItem('@userEmail')
-        userName = await AsyncStorage.getItem('@userName')
-        userId = 3
-    }
-
-    // http request to fetch user list
-    const getComment = async () =>{
-        try{
-            const response = await fetch(config.url+'/comments/tweets/'+route.params.tweetId+'/'+state.page);
-            let res = await response.json()
-            res=res.map(item => (
-                {...item,liked : false}
-            ))
-            if(res.length<10){
-                changeState(prevState => ({
-                    ... state,
-                    comments : prevState.page==1?  res : [...prevState.comments,...res],
-                    isLoading : false,
-                    moreAvailable : false
-                }))
-            }                
-            else{
-                changeState(prevState => ({
-                    ... state,
-                    comments : prevState.page==1?  res : [...prevState.comments,...res], 
-                    isLoading: false,
-                }))
-            }
-        }
-        catch(err){
-            console.log(err)
-        }
-    }
-
-    // Event Handlers
     useEffect(()=>{
-        getFromStorage()
+        userName,userEmail,userId = getFromStorage()
     },[])
     useEffect(()=>{
-        getComment()
+        getComment(route,state,changeState)
     },[state.page])
     
-    const handleLoad = ()=>{
-        if(state.moreAvailable)
-            changeState({...state, page: state.page+1})
-    }
-    const handleRefresh = ()=>{
-        changeState({...state, page: 1,moreAvailable : true})
-    }
-
-    const isValidComment = () => {
-        if(commentText.length===0)
-            return false
-        return true
-    }
-    const sendComment = async () =>{
-        if(isValidComment()){
-            try{
-                const response = await fetch(config.url+'/comments/create',{
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        tid : route.params.tweetId,
-                        uid : userId,
-                        comment : commentText,
-                    })
-                })
-                let data = await response.json()
-                if(data.id!=undefined){
-                    updateComment('');
-                    getComment()
-                }
-            }
-            catch(err){
-                console.log(err)
-            }
-        }
-    }
-    // Rendering Views
-    const renderView = ({item}) =>{
-        return (
-            <View style = {styles.listItem}>
-                <View style={{flex: 10}}>
-                    <Text style = {styles.commentName}>
-                       {item.user.name}
-                    </Text>
-                    <Text style = {styles.comment}>
-                        {item.comment}
-                    </Text>
-                </View>
-                <AntDesign 
-                    style = {{alignSelf : 'flex-end'}}
-                    name={item.liked ? 'heart':'hearto'} 
-                    size= {15} 
-                    hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                    onPress = {()=>{
-                        changeState(prevState =>({
-                            ...prevState,
-                            comments : prevState.comments.map(userObj =>(
-                                userObj.id === item.id ?
-                                {
-                                    ...userObj,
-                                    liked : !item.liked
-                                } : userObj
-                            ))
-                        }))
-                    }}
-                />
-            </View>
-        );
-    }
-
-    const seperatorLine = ()=>{
-        return (
-            <View 
-                style ={styles.baseline}
-            />
-        );
-    }
-    const renderFooter = () =>{
-        return (
-            <TouchableOpacity style={styles.container,{marginBottom:20}} onPress = {()=>handleLoad()}>
-                <Text style={styles.moreComments} >View More comments</Text>
-            </TouchableOpacity>
-        );
-    }
-    const renderFinished = () =>{
-        return (
-            <View style={styles.container,{marginBottom:20}}>
-                <Ionicons style = {{alignSelf:'center'}} name="checkmark-done-circle-outline" size={44} color="white" />
-                <Text style={{fontWeight: 'bold',alignSelf:'center',color : 'white'}}>No further comments</Text>
-            </View>
-        );
-    }
     return (
         <View style={styles.container}>
             <View style = {styles.upperSection}>
@@ -188,11 +61,11 @@ export default userList = ({route,navigation}) =>{
             <View style={styles.commentSection}>
                 <FlatList
                     data = {state.comments}
-                    renderItem = {renderView}
+                    renderItem = {({item}) => renderView(item,state,changeState)}
                     keyExtractor ={ item => item.id.toString()}
                     ItemSeparatorComponent = {seperatorLine}
-                    ListFooterComponent = {state.moreAvailable?renderFooter : renderFinished}
-                    onRefresh = {handleRefresh}
+                    ListFooterComponent = {()=>state.moreAvailable?renderFooter(state,changeState) : renderFinished()}
+                    onRefresh = {() => handleRefresh(state,changeState)}
                     refreshing = {state.isLoading}
                 />
             </View>
@@ -204,9 +77,10 @@ export default userList = ({route,navigation}) =>{
                     onChangeText = {(text)=>updateComment(text)}
                     value = {commentText}
                 />
-                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment()}/>
+                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment(route,commentText,updateComment,state,changeState)}/>
             </View>
         </View>
     )
 }
 
+export default singleFeed

@@ -1,227 +1,25 @@
-import React , { useState ,useEffect } from 'react'
+import React , { useState, useEffect } from 'react'
 import { View , Text, Image ,Modal, TextInput,TouchableOpacity} from 'react-native'
 import { Feather } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import config from '../../utils/config'
 import styles from './styles'
+import {
+    INITIAL_STATE,
+    getFromStorage,
+    resetPassword,
+    editName,
+    handleChange
+} from './utilFunctions'
 
-const profile = ({route,navigation}) =>{
+const profile = ({navigation}) =>{
 
-    const INITIAL_STATE={
-        nameEdit : {
-            name : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Enter your name'
-            },
-            password :{
-                value : '',
-                errMsg : '',
-                placeholder : 'Current Password',
-                secureText : true
-            }
-        },
-        passwordEdit : {
-            currentPassword : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Current Password',
-                secureText : true
-            },
-            newPassword :{
-                value : '',
-                errMsg : '',
-                placeholder : 'New Password',
-                secureText : true
-            },
-            newPassword1 : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Re-enter New Password',
-                secureText : true
-            }
-        }
-    }
     const [nameModalVisible,changeNameModal] = useState(false)
     const [passwordModalVisible,changePasswordModal] = useState(false)
     const [state, updateState] = useState(INITIAL_STATE)
-
+    
     let userName,userEmail,userId;
-    const getFromStorage = async () => {
-        userEmail = await AsyncStorage.getItem('@userEmail')
-        userName = await AsyncStorage.getItem('@userName')
-        userId = 3
-    }
-
     useEffect(()=>{
-        getFromStorage()
+        userName,userEmail,userId = getFromStorage()
     },[])
-    const isValidNameFields = () => {
-        let nameRegex=/^[A-Za-z\s ]+$/;
-        let flag = true
-        if(state.nameEdit.name.value.length==0){
-            updateState(prevState => ({
-                ...prevState,
-                nameEdit : {
-                    ...prevState.nameEdit,
-                    name : {
-                        ...prevState.nameEdit.name,
-                        errMsg : "Name is Mandatory!!!"
-                    },
-                    
-                }
-            }))
-            flag = false
-        }
-        else if(!nameRegex.test(state.nameEdit.name.value)){
-            updateState(prevState => ({
-                ...prevState,
-                nameEdit : {
-                    ...prevState.nameEdit,
-                    name : {
-                        ...prevState.nameEdit.name,
-                        errMsg : "Must be Alphabatic!!!"
-                    },
-                    
-                }
-            })) 
-            flag =false
-        }
-        
-        if(state.nameEdit.password.value.length==0){
-            updateState(prevState => ({
-                ...prevState,
-                nameEdit : {
-                    ...prevState.nameEdit,
-                    password : {
-                        ...prevState.nameEdit.password,
-                        errMsg : "Password is required!!!"
-                    },
-                }
-            })) 
-            flag=false
-        }
-        return flag
-    }
-    const isValidPasswordFields = () =>{
-        let flag = true
-        if(state.passwordEdit.currentPassword.value.length==0){
-            updateState(prevState => ({
-                ...prevState,
-                passwordEdit : {
-                    ...prevState.passwordEdit,
-                    currentPassword : {
-                        ...prevState.passwordEdit.currentPassword,
-                        errMsg : "**Required"
-                    },
-                    
-                }
-            }))
-            flag=false
-        }
-        if(state.passwordEdit.newPassword.value.length<6){
-            updateState(prevState => ({
-                ...prevState,
-                passwordEdit : {
-                    ...prevState.passwordEdit,
-                    newPassword : {
-                        ...prevState.passwordEdit.newPassword,
-                        errMsg : "Must be atleast 6 characters long!!"
-                    },
-                }
-            }))
-            flag=false
-        }
-        else if(state.passwordEdit.newPassword.value !=state.passwordEdit.newPassword1.value){
-            updateState(prevState => ({
-                ...prevState,
-                passwordEdit : {
-                    ...prevState.passwordEdit,
-                    newPassword1 : {
-                        ...prevState.passwordEdit.newPassword1,
-                        errMsg : "Password don't match!!"
-                    },
-                }
-            }))
-            flag=false
-        }
-        return flag
-    }
-
-    const handleChange = (editType , key,text) => {
-        updateState(prevState => ({
-            ...prevState,
-            [editType] : {
-                ...prevState[editType],
-                [key] : {
-                    ...prevState[editType][key],
-                    value : text,
-                    errMsg : ''
-                },
-                
-            }
-        })) 
-    }
-
-    const resetPassword = async ()=>{
-        if(isValidPasswordFields()){
-            try{
-                const response = await fetch(config.url+'/user/update/2',{
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        uid : userId,
-                        currentPassword : state.passwordEdit.currentPassword.value,
-                        newPassword : state.passwordEdit.newPassword.value,
-                    })
-                })
-                const data = await response.json()
-                if(data.status){
-                    alert(data.message)
-                    navigation.navigate('Profile')
-                }
-                else{
-                    alert(data.message)
-                }
-            }
-            catch(err){
-                console.log(err)
-            }
-        }
-    }
-
-    const editName = async () =>{
-        if(isValidNameFields()){
-            try{
-                const response = await fetch(config.url+'/user/update/1',{
-                    method: 'POST',
-                    headers: {
-                        Accept: 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        uid : userId,
-                        name : state.nameEdit.name.value,
-                        currentPassword : state.nameEdit.password.value,
-                    })
-                })
-                const data = await response.json()
-                if(data.status){
-                    alert(data.message)
-                    navigation.navigate('Profile')
-                }
-                else{
-                    alert(data.message)
-                }
-            }
-            catch(err){
-                console.log(err)
-            }
-        }
-    }
 
     return (
         <View style={styles.container}>
@@ -272,7 +70,7 @@ const profile = ({route,navigation}) =>{
                                             style={styles.inputBox}
                                             placeholder = {inputObj.placeholder}
                                             placeholderTextColor = "gray"
-                                            onChangeText = {(text) => handleChange('nameEdit',key,text)}
+                                            onChangeText = {(text) => handleChange('nameEdit',key,text,updateState)}
                                             value= {inputObj.value}
                                             secureTextEntry = {inputObj.secureText}
                                         />
@@ -286,12 +84,13 @@ const profile = ({route,navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => editName()}>
+                <TouchableOpacity style={styles.button} onPress={() => editName(state, updateState)}>
                     <Text style={styles.buttonText}>
                         Edit
                     </Text>
                 </TouchableOpacity>
             </Modal>
+
             <Modal visible = {passwordModalVisible} style = {styles.modalView} animationType='slide'>
                 <Text 
                     onPress={()=>{
@@ -313,7 +112,7 @@ const profile = ({route,navigation}) =>{
                                             style={styles.inputBox}
                                             placeholder = {inputObj.placeholder}
                                             placeholderTextColor = "gray"
-                                            onChangeText = {(text) => handleChange('passwordEdit',key,text)}
+                                            onChangeText = {(text) => handleChange('passwordEdit',key,text,updateState)}
                                             value= {inputObj.value}
                                             secureTextEntry = {inputObj.secureText}
                                         />
@@ -327,7 +126,7 @@ const profile = ({route,navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => resetPassword()}>
+                <TouchableOpacity style={styles.button} onPress={() => resetPassword(state, updateState)}>
                     <Text style={styles.buttonText}>
                         Reset
                     </Text>

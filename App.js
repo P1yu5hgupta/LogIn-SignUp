@@ -15,21 +15,21 @@ import SearchFriend from './app/screens/friendsScreen/index'
 const Stack = createStackNavigator();
 
 const App = () => {
-        return (
-          <NavigationContainer>
-              <Stack.Navigator initialRouteName="Home">
-                    <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
-                    <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
-                    <Stack.Screen name="ShowTweets" component={ShowTweets} options={{headerShown:false}}/>
-                    <Stack.Screen name="Email" component={Email} options={{headerShown:false}}/>
-                    <Stack.Screen name="Password" component={Password} options={{headerShown:false}}/>
-                    <Stack.Screen name="CreateTweet" component={CreateTweet} options={{headerShown:false}}/>
-                    <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
-                    <Stack.Screen name="SingleTweet" component={SingleTweet} options={{headerShown:false}}/>
-                    <Stack.Screen name="SearchFriends" component={SearchFriend} options={{headerShown:false}}/>
-              </Stack.Navigator>
-          </NavigationContainer>
-        );
+    return (
+      <NavigationContainer>
+          <Stack.Navigator initialRouteName="SignUp">
+                <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+                <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
+                <Stack.Screen name="ShowTweets" component={ShowTweets} options={{headerShown:false}}/>
+                <Stack.Screen name="Email" component={Email} options={{headerShown:false}}/>
+                <Stack.Screen name="Password" component={Password} options={{headerShown:false}}/>
+                <Stack.Screen name="CreateTweet" component={CreateTweet} options={{headerShown:false}}/>
+                <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+                <Stack.Screen name="SingleTweet" component={SingleTweet} options={{headerShown:false}}/>
+                <Stack.Screen name="SearchFriends" component={SearchFriend} options={{headerShown:false}}/>
+          </Stack.Navigator>
+      </NavigationContainer>
+    );
 }
-
+ 
 export default App;

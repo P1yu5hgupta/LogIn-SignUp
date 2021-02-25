@@ -1,49 +1,16 @@
 import React , { useState ,useEffect } from 'react'
 import { View , Text, Image, TouchableOpacity, TextInput } from 'react-native'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import config from '../../utils/config'
 import styles from './styles'
+import { getFromStorage, tweet } from './utilsFunctions'
 
-
-export default createTweet = ({route,navigation}) =>{
+export default createTweet = ({ navigation }) =>{
     const [tweetText, changeText] = useState('')
 
-    let userName,userEmail,userId;
-    const getFromStorage = async () => {
-        userEmail = await AsyncStorage.getItem('@userEmail')
-        userName = await AsyncStorage.getItem('@userName')
-        userId = 3
-    }
-
-    const tweet = async () => {
-        if(tweetText.length==0){
-            alert('Please write something....')
-            return
-        }
-        try{
-            const response = await fetch(config.url+'/tweets/create',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uid : userId,
-                    tweet : tweetText
-                })
-            })
-            let data = await response.json()
-            changeText('')
-            navigation.navigate('ShowTweets')
-        }
-        catch(err){
-            console.log(err)
-        }
-    }
-
+    let userName,userEmail,userId
     useEffect(() =>{
-        getFromStorage()
+         userName,userEmail,userId = getFromStorage()
     },[])
+
     return (
         <View style={styles.container}>
             <View style={styles.navigationBar} >
@@ -51,7 +18,7 @@ export default createTweet = ({route,navigation}) =>{
                     Cancel
                 </Text>
                 <TouchableOpacity style={styles.buttonContainer}>
-                    <Text style={styles.buttonText} onPress = {()=>tweet()}>
+                    <Text style={styles.buttonText} onPress = {()=>tweet(tweetText, changeText,navigation)}>
                         Tweet
                     </Text>
                 </TouchableOpacity>
@@ -61,7 +28,7 @@ export default createTweet = ({route,navigation}) =>{
                     source = {require('../../assests/images/shared/default_profile.png')}
                     style = {styles.image}
                 />
-                <TextInput 
+                <TextInput
                     style={styles.inputBox}
                     placeholder= "What's happening ??"
                     placeholderTextColor = "gray"
