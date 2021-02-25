@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View, TextInput, Image,TouchableOpacity } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Text, View, TextInput, Image,TouchableOpacity,ScrollView } from 'react-native'
+import config from '../../utils/config'
+import styles from './styles'
 
 export default class signIn extends Component{
     constructor(){
@@ -11,22 +12,14 @@ export default class signIn extends Component{
     get initialState() {
         return {
             userDetails : {
-                email : {
+                userId : {
                     value : '',
                     errMsg : '',
-                    placeholder : 'Email',
-                    imageURL: require('../assets/signIn/personLogo.png'),
+                    placeholder : 'Email/Mobile No.',
+                    imageURL: require('../../assests/images/getEmailScreen/personLogo.png'),
                     style: 'personLogo'
-                },
-                password : {
-                    value : '',
-                    errMsg : '',
-                    placeholder : 'Password',
-                    imageURL: require('../assets/signIn/lockLogo.png'),
-                    style: 'lockLogo',
-                    secureText : true
                 }
-            }
+            },
         }
     }
     handleChange = (key,text) =>{
@@ -40,53 +33,51 @@ export default class signIn extends Component{
     isValidFields = () =>{
         let flag=true
         let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
-
-        if(this.state.userDetails.password.value.length==0){
+        let phoneRegex = /^[6-9]\d{9}$/
+        let type=2
+        if(this.state.userDetails.userId.value.length==0){
             this.setState((state)=>{
-                state.userDetails.password.errMsg = "Password Required!!!" 
-            })
-            flag=false
-        }
-
-        if(this.state.userDetails.email.value.length==0){
-            this.setState((state)=>{
-                state.userDetails.email.errMsg = "Email is mandatory!!!"
+                state.userDetails.userId.errMsg = "Mandatory!!!"
                 return state
             })
             flag=false
         }
-        else if(!mailRegex.test(this.state.userDetails.email.value)){
+        else if(!mailRegex.test(this.state.userDetails.userId.value) && !phoneRegex.test(this.state.userDetails.userId.value)){
             this.setState((state)=>{
-                state.userDetails.email.errMsg = "Invalid Email Address!!!"
+                state.userDetails.userId.errMsg = "Invalid Entry!!!"
                 return state
             })
             flag=false
         }
-
-        return flag       
+        else if(mailRegex.test(this.state.userDetails.userId.value)){
+            type=1
+        }
+        return { flag , type }
     }
     submit = async () => {
-        console.log(this.baseState)
-        if(this.isValidFields()){
+        const {flag,type} = this.isValidFields()
+        if(flag){
             try{
-                const response = await fetch('http://192.168.1.43:8000/signin',{
+                const response = await fetch(config.url+'/user/email',{
                     method: 'POST',
                     headers: {
                         Accept: 'application/json',
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        email : this.state.userDetails.email.value,
-                        password : this.state.userDetails.password.value
+                        email : this.state.userDetails.userId.value,
                     })
                 })
                 let data = await response.json()
                 if(!data.status){
                     alert(data.message)
+                    this.setState(this.initialState,()=>{
+                        this.props.navigation.navigate("SignUp")
+                    })
                 }
                 else{
-                    this.setState(this.initialState,()=>{
-                        this.props.navigation.navigate("UserList")
+                    this.props.navigation.navigate("Password",{
+                        data : this.state.userDetails.userId.value
                     })
                 }
             }
@@ -102,7 +93,7 @@ export default class signIn extends Component{
                 <TouchableOpacity onPress={()=>{this.setState(this.initialState,()=>{this.props.navigation.goBack()})}}>
                     <Image 
                         style={styles.backIcon}
-                        source={require('../assets/signIn/backLogo.png')}
+                        source={require('../../assests/images/shared/backLogo.png')}
                     />
                 </TouchableOpacity>
                 
@@ -115,7 +106,7 @@ export default class signIn extends Component{
                         Object.keys(this.state.userDetails).map( (key) => {
                             const inputObj=this.state.userDetails[key]
                             return(
-                                <View>
+                                <View key={inputObj.userId}>
                                     <View style={styles.inputView}>
                                         <Image
                                             style={styles[inputObj.style]}
@@ -124,7 +115,7 @@ export default class signIn extends Component{
                                         <TextInput 
                                             style={styles.inputBox}
                                             placeholder= {inputObj.placeholder}
-                                            placeholderTextColor = "white"
+                                            placeholderTextColor = "gray"
                                             onChangeText = {(text)=>this.handleChange(key,text)}
                                             secureTextEntry = {inputObj.secureText}
                                             value = {inputObj.value}
@@ -142,7 +133,7 @@ export default class signIn extends Component{
     
                 <TouchableOpacity style={styles.button} onPress={()=>this.submit()}>
                     <Text style={styles.buttonText}>
-                        Log In
+                        Next
                     </Text>
                 </TouchableOpacity>
                 
@@ -163,73 +154,3 @@ export default class signIn extends Component{
 }
 
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: '#303030',
-        paddingLeft: 40,   
-    },
-    backIcon: {
-        width: 25,
-        height: 25,
-        marginTop: 80,
-    }, 
-    loginText:{
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 50,
-        marginTop: 80,    
-    },
-    form:{
-        marginTop: 80,
-    },
-    personLogo:{
-        width: 40,
-        height: 40,
-    },
-    lockLogo:{
-        width: 35,
-        height: 35,
-    },
-    errorMsg: {
-        color: '#B00000',
-        marginTop: 5,
-        marginLeft: 15,
-    },
-    inputBox:{
-        color: 'white',
-    },
-    inputView:{
-        flexDirection:'row',
-        flexWrap:'wrap',
-        marginTop: 20,
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1,
-        width: 300,
-    },
-    button:{
-        marginTop:60,
-        width: 250,
-        marginLeft: 30,
-        backgroundColor: 'black',
-        paddingVertical: 14,
-        borderRadius: 400,
-        borderColor: 'black',
-        borderWidth: 2,
-    },
-    buttonText:{
-        textAlign: 'center',
-        color: 'white',
-        fontWeight: 'bold',
-        fontSize: 20,
-    },
-    signUpText:{
-        color: 'white',
-        marginTop: 10,
-        marginLeft: 30,
-    },
-    innerText:{
-        fontWeight:'bold',
-        color: '#99FFFF',
-    }
-});

@@ -1,27 +1,35 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createStackNavigator } from '@react-navigation/stack';
 
-import Home from './components/home'
-import SignIn from './components/signIn'
-import SignUp from './components/signUp'
-import Practice from './components/practice'
-import UserList from './components/userList'
+import Home from './app/screens/homeScreen/index'
+import SignUp from './app/screens/signUpScreen/index'
+import Email from './app/screens/getEmailScreen/index'
+import Password from './app/screens/getPasswordScreen/index'
+import ShowTweets from './app/screens/newsfeedsScreen/index'
+import CreateTweet from './app/screens/createTweetScreen/index'
+import Profile from './app/screens/profileScreen/index'
+import SingleTweet from './app/screens/showSingleFeedScreen/index'
+import SearchFriend from './app/screens/friendsScreen/index'
 
-const Drawer = createDrawerNavigator();
+const Stack = createStackNavigator();
 
-export default class App extends Component {
-    render(){
+const App = () => {
         return (
           <NavigationContainer>
-              <Drawer.Navigator initialRouteName="Home">
-                  <Drawer.Screen name="Home" component={Home} />
-                  <Drawer.Screen name="SignIn" component={SignIn} />
-                  <Drawer.Screen name="SignUp" component={SignUp} />
-                  <Drawer.Screen name="UserList" component={UserList} />
-              </Drawer.Navigator>
+              <Stack.Navigator initialRouteName="Home">
+                    <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
+                    <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
+                    <Stack.Screen name="ShowTweets" component={ShowTweets} options={{headerShown:false}}/>
+                    <Stack.Screen name="Email" component={Email} options={{headerShown:false}}/>
+                    <Stack.Screen name="Password" component={Password} options={{headerShown:false}}/>
+                    <Stack.Screen name="CreateTweet" component={CreateTweet} options={{headerShown:false}}/>
+                    <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
+                    <Stack.Screen name="SingleTweet" component={SingleTweet} options={{headerShown:false}}/>
+                    <Stack.Screen name="SearchFriends" component={SearchFriend} options={{headerShown:false}}/>
+              </Stack.Navigator>
           </NavigationContainer>
-        // <Practice/>
         );
-    }
 }
+
+export default App;
