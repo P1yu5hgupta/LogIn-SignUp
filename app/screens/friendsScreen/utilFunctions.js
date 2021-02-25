@@ -1,17 +1,6 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '../../utils/config'
 
-let userEmail , user , userId
-const getFromStorage = async () => {
-    userEmail = await AsyncStorage.getItem('@userEmail')
-    user = await AsyncStorage.getItem('@userName')
-    userId = 3
-
-    return { userEmail , user , userId }
-}
-
 const isValidFields = (userName, updateName) =>{
-    let flag=true
     let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
     let phoneRegex = /^[6-9]\d{9}$/
     if(userName.value.length==0){
@@ -27,7 +16,7 @@ const isValidFields = (userName, updateName) =>{
     return true
 }
 
-const searchFriends = async (userName,updateName,friendStatus,changeStatus)=>{
+const searchFriends = async (userData,userName,updateName,friendStatus,changeStatus)=>{
     if(isValidFields(userName, updateName)){
         try{
             const response = await fetch(config.url+'/user/search',{
@@ -38,7 +27,7 @@ const searchFriends = async (userName,updateName,friendStatus,changeStatus)=>{
                 },
                 body : JSON.stringify({
                     email : userName.value,
-                    uid : userId
+                    uid : userData.userId
                 })
             })
             let data = await response.json()
@@ -80,9 +69,9 @@ const searchFriends = async (userName,updateName,friendStatus,changeStatus)=>{
     }
 }
 
-const sendRequest = async (friendStatus,changeStatus) =>{
+const sendRequest = async (userData,friendStatus,changeStatus) =>{
     try{
-        const response = await fetch(config.url+'/friendship/friendRequest/'+userId+'/'+friendStatus.friendId)
+        const response = await fetch(config.url+'/friendship/friendRequest/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
         if(data.status){
             changeStatus({
@@ -97,9 +86,9 @@ const sendRequest = async (friendStatus,changeStatus) =>{
     }
 }
 
-const acceptRequest = async (friendStatus,changeStatus) =>{
+const acceptRequest = async (userData,friendStatus,changeStatus) =>{
     try{
-        const response = await fetch(config.url+'/friendship/friendAccept/'+userId+'/'+friendStatus.friendId)
+        const response = await fetch(config.url+'/friendship/friendAccept/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
         if(data.status){
             changeStatus({
@@ -113,9 +102,9 @@ const acceptRequest = async (friendStatus,changeStatus) =>{
     }
 }
 
-const rejectRequest = async (friendStatus,changeStatus) =>{
+const rejectRequest = async (userData,friendStatus,changeStatus) =>{
     try{
-        const response = await fetch(config.url+'/friendship/friendReject/'+userId+'/'+friendStatus.friendId)
+        const response = await fetch(config.url+'/friendship/friendReject/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
         if(data.status){
             changeStatus({
@@ -140,4 +129,10 @@ const handleChange = (updateName,text,changeStatus,friendStatus) =>{
     })
 }
 
-export { handleChange, rejectRequest, sendRequest, acceptRequest, getFromStorage, searchFriends }
+export { 
+    handleChange, 
+    rejectRequest, 
+    sendRequest, 
+    acceptRequest, 
+    searchFriends 
+}

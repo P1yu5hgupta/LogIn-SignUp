@@ -1,24 +1,13 @@
 import React from 'react'
 import { View , Text,Image, ActivityIndicator, BackHandler, Alert } from 'react-native'
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
-import { EvilIcons } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
 
-let userEmail, userName, userId;
-const getFromStorage = async () => {
-    userEmail = await AsyncStorage.getItem('@userEmail')
-    userName = await AsyncStorage.getItem('@userName')
-    userId = 3
-    return { userEmail, userName, userId }
-}
-
 // http request to fetch user list
-const getData = async () =>{
+const getData = async (userData,state,changeState) =>{
     try{
-        const response = await fetch(config.url+'/tweets/all/3/'+state.page);
+        const response = await fetch(config.url+'/tweets/all/'+userData.userId+'/'+state.page);
         let res = await response.json()
         res=res.map(item => (
             {...item,liked : false}
@@ -149,8 +138,7 @@ const renderFinished = () =>{
     );
 }
 
-export { 
-    getFromStorage , 
+export {
     getData, 
     backButtonPressed, 
     handleLoad, 

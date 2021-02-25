@@ -35,7 +35,7 @@ const signUp = ({ navigation }) => {
                     Object.keys(INITIAL_STATE.userDetails).map( (key) => {
                         const inputObj = state.userDetails[key]
                         return(
-                            <View key={inputObj.email}>
+                            <View key={inputObj.placeholder}>
                                 <View style={styles.inputView}>
                                 <TextInput 
                                     style={styles.inputBox}

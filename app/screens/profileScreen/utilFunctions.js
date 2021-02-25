@@ -1,4 +1,3 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '../../utils/config'
 
 const INITIAL_STATE={
@@ -35,14 +34,6 @@ const INITIAL_STATE={
             secureText : true
         }
     }
-}
-
-let userEmail,userName,userId
-const getFromStorage = async () => {
-    userEmail = await AsyncStorage.getItem('@userEmail')
-    userName = await AsyncStorage.getItem('@userName')
-    userId = 3
-    return { userEmail,userName,userId }
 }
 
 const isValidNameFields = (state, updateState) => {
@@ -153,7 +144,7 @@ const handleChange = (editType , key,text, updateState) => {
     })) 
 }
 
-const resetPassword = async (state, updateState,navigation)=>{
+const resetPassword = async (userData, state, updateState,navigation)=>{
     if(isValidPasswordFields(state, updateState)){
         try{
             const response = await fetch(config.url+'/user/update/2',{
@@ -163,7 +154,7 @@ const resetPassword = async (state, updateState,navigation)=>{
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    uid : userId,
+                    uid : userData.userId,
                     currentPassword : state.passwordEdit.currentPassword.value,
                     newPassword : state.passwordEdit.newPassword.value,
                 })
@@ -183,7 +174,7 @@ const resetPassword = async (state, updateState,navigation)=>{
     }
 }
 
-const editName = async (state, updateState,navigation) =>{
+const editName = async (userData, state, updateState,navigation) =>{
     if(isValidNameFields(state, updateState)){
         try{
             const response = await fetch(config.url+'/user/update/1',{
@@ -193,7 +184,7 @@ const editName = async (state, updateState,navigation) =>{
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    uid : userId,
+                    uid : userData.userId,
                     name : state.nameEdit.name.value,
                     currentPassword : state.nameEdit.password.value,
                 })
@@ -215,8 +206,7 @@ const editName = async (state, updateState,navigation) =>{
 
 export {
     INITIAL_STATE,
-    getFromStorage,
     resetPassword,
     editName,
-    handleChange,
+    handleChange
 }

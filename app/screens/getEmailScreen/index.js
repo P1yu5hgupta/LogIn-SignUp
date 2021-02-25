@@ -1,24 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, TextInput, Image,TouchableOpacity,ScrollView } from 'react-native'
 import styles from './styles'
-import { handleChange, submit } from './utilFunctions'
+import { INITIAL_STATE,handleChange, submit } from './utilFunctions'
 
 const signIn = ({ navigation }) => {
     
-    const INITIAL_STATE = {
-        userDetails : {
-            userId : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Email/Mobile No.',
-                imageURL: require('../../assests/images/getEmailScreen/personLogo.png'),
-                style: 'personLogo'
-            }
-        },
-    }
-    
     const [state,setState] = useState(INITIAL_STATE)
-
+    
     return(
         <ScrollView style={styles.container}>
             <TouchableOpacity 
@@ -41,7 +29,7 @@ const signIn = ({ navigation }) => {
                     Object.keys(INITIAL_STATE.userDetails).map( (key) => {
                         const inputObj= state.userDetails[key]
                         return(
-                            <View key={inputObj.userId}>
+                            <View key={inputObj.value}>
                                 <View style={styles.inputView}>
                                     <Image
                                         style={styles[inputObj.style]}

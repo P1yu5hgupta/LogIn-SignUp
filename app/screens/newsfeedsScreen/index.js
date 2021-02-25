@@ -1,11 +1,9 @@
 import React , { useState ,useEffect } from 'react'
-import { View , Text, StyleSheet,Image, Linking, FlatList, ActivityIndicator, BackHandler, Alert } from 'react-native'
-import { AntDesign } from '@expo/vector-icons';
-import { Ionicons } from '@expo/vector-icons'; 
-import { EvilIcons } from '@expo/vector-icons'; 
+import { View, FlatList, BackHandler } from 'react-native'
+import { EvilIcons,Ionicons,AntDesign } from '@expo/vector-icons'; 
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
-import {
-    getFromStorage , 
+import { 
     getData, 
     backButtonPressed, 
     handleLoad, 
@@ -21,15 +19,27 @@ export default userList = ({ navigation }) =>{
 
     const [state,changeState] = useState({data : [{id: 'jhb',user : {name: 'sfsdf'},tweet : 'asdaf',createdAt : 'gfkjn'}], isLoading : false, page: 1,moreAvailable : true })
 
-    let userName,userEmail,userId;
-    useEffect(() => {
-        userName,userEmail,userId=getFromStorage()
+    const [ userData,changeUserData ] = useState({
+        userName : '',
+        userEmail : '',
+        userId : undefined
+    })
+    const getUserData = async () => {
+        changeUserData({
+            userName : await AsyncStorage.getItem('@userName'),
+            userEmail : await AsyncStorage.getItem('@userEmail'),
+            userId : Number(await AsyncStorage.getItem('@userId'))
+        })
+    }
+
+    useEffect(()=>{
+        getUserData()
         BackHandler.addEventListener('hardwareBackPress', backButtonPressed)
         return () => BackHandler.removeEventListener('hardwareBackPress',backButtonPressed)
     },[]);
     
     useEffect(()=>{
-        getData()
+        getData(userData,state,changeState)
     },[state.page])
 
     return (

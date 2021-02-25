@@ -13,7 +13,7 @@ const home = ({ navigation })=>{
     return(
         <View style={styles.container}>
             <Image 
-                style= {styles.logo} 
+                style= {styles.logo}
                 source={require('../../assests/images/homeScreen/logo.png')} 
             />
 

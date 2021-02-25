@@ -1,14 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '../../utils/config'
 
-const getFromStorage = async () => {
-    userEmail = await AsyncStorage.getItem('@userEmail')
-    userName = await AsyncStorage.getItem('@userName')
-    userId = 3
-    return { userEmail, userName, userId }
-}
-
-const tweet = async (tweetText, changeText,navigation) => {
+const tweet = async (userData,tweetText, changeText,navigation) => {
     if(tweetText.length==0){
         alert('Please write something....')
         return
@@ -21,7 +14,7 @@ const tweet = async (tweetText, changeText,navigation) => {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                uid : userId,
+                uid : userData.userId,
                 tweet : tweetText
             })
         })
@@ -34,4 +27,4 @@ const tweet = async (tweetText, changeText,navigation) => {
     }
 }
 
-export { getFromStorage, tweet }
+export { tweet }

@@ -4,21 +4,33 @@ import { Feather } from '@expo/vector-icons';
 import styles from './styles'
 import {
     INITIAL_STATE,
-    getFromStorage,
     resetPassword,
     editName,
-    handleChange
+    handleChange,
 } from './utilFunctions'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const profile = ({navigation}) =>{
 
     const [nameModalVisible,changeNameModal] = useState(false)
     const [passwordModalVisible,changePasswordModal] = useState(false)
     const [state, updateState] = useState(INITIAL_STATE)
+    const [ userData,changeUserData ] = useState({
+        userName : '',
+        userEmail : '',
+        userId : ''
+    })
     
-    let userName,userEmail,userId;
+    const getUserData = async () => {
+        changeUserData({
+            userName : await AsyncStorage.getItem('@userName'),
+            userEmail : await AsyncStorage.getItem('@userEmail'),
+            userId : await AsyncStorage.getItem('@userId')
+        })
+    }
+
     useEffect(()=>{
-        userName,userEmail,userId = getFromStorage()
+        getUserData()
     },[])
 
     return (
@@ -37,7 +49,7 @@ const profile = ({navigation}) =>{
             </View>
             <View style={styles.userInfo}>
                 <Text style={styles.nameText}>
-                    {userName}
+                    { userData.userName}
                 </Text>
                 <Text style={styles.editText} onPress={()=> changeNameModal(true)}>
                     Edit
@@ -84,7 +96,7 @@ const profile = ({navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => editName(state, updateState)}>
+                <TouchableOpacity style={styles.button} onPress={() => editName(userData, state, updateState)}>
                     <Text style={styles.buttonText}>
                         Edit
                     </Text>
@@ -126,7 +138,7 @@ const profile = ({navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => resetPassword(state, updateState)}>
+                <TouchableOpacity style={styles.button} onPress={() => resetPassword(userData, state, updateState)}>
                     <Text style={styles.buttonText}>
                         Reset
                     </Text>

@@ -1,9 +1,9 @@
-import React , { useState ,useEffect, isValidElement } from 'react'
-import { TextInput,View , Text, StyleSheet,Image, FlatList } from 'react-native'
+import React , { useState ,useEffect } from 'react'
+import { TextInput,View , Text,Image, FlatList } from 'react-native'
 import { FontAwesome,EvilIcons,AntDesign } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
 import {
-    getFromStorage,
     handleRefresh,
     getComment,
     sendComment,
@@ -19,9 +19,21 @@ const singleFeed = ({route,navigation}) =>{
     const [state,changeState] = useState({comments : [], isLoading : false, page: 1,moreAvailable : true })
     const [commentText,updateComment] = useState('')
 
-    let userName,userEmail,userId;
+    const [ userData,changeUserData ] = useState({
+        userName : '',
+        userEmail : '',
+        userId : undefined
+    })
+    const getUserData = async () => {
+        changeUserData({
+            userName : await AsyncStorage.getItem('@userName'),
+            userEmail : await AsyncStorage.getItem('@userEmail'),
+            userId : Number(await AsyncStorage.getItem('@userId'))
+        })
+    }
+
     useEffect(()=>{
-        userName,userEmail,userId = getFromStorage()
+        getUserData()
     },[])
     useEffect(()=>{
         getComment(route,state,changeState)
@@ -77,7 +89,7 @@ const singleFeed = ({route,navigation}) =>{
                     onChangeText = {(text)=>updateComment(text)}
                     value = {commentText}
                 />
-                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment(route,commentText,updateComment,state,changeState)}/>
+                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment(route,userData,commentText,updateComment,state,changeState)}/>
             </View>
         </View>
     )

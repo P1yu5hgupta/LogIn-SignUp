@@ -1,6 +1,19 @@
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import config from '../../utils/config'
 
+const INITIAL_STATE = {
+    userDetails : {
+        password : {
+            value : '',
+            errMsg : '',
+            placeholder : 'Password',
+            imageURL: require('../../assests/images/getPasswordScreen/lockLogo.png'),
+            style: 'lockLogo',
+            secureText : true
+        }
+    }
+}
+
 const handleChange = (state,setState,key,text) =>{
     setState({
         ...state,
@@ -53,9 +66,9 @@ const submit = async (route,state,setState) => {
                 alert(data.message)
             }
             else{
-                console.log(data)
                 await AsyncStorage.setItem('@userEmail',data.email)
                 await AsyncStorage.setItem('@userName',data.name)
+                await AsyncStorage.setItem('@userId',data.userId.toString())
                 setState(INITIAL_STATE)
                 navigation.navigate("ShowTweets")
             }
@@ -66,4 +79,4 @@ const submit = async (route,state,setState) => {
     }
 }
 
-export { handleChange, submit }
+export { INITIAL_STATE, handleChange, submit }

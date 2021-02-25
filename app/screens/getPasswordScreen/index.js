@@ -1,22 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, TextInput, Image,TouchableOpacity, ScrollView } from 'react-native'
-import { handleChange, submit } from './utilFunctions'
+import { handleChange, submit, INITIAL_STATE } from './utilFunctions'
 import styles from './styles'
 
 const signIn = ({route, navigation }) => {
-    
-    const INITIAL_STATE = {
-        userDetails : {
-            password : {
-                value : '',
-                errMsg : '',
-                placeholder : 'Password',
-                imageURL: require('../../assests/images/getPasswordScreen/lockLogo.png'),
-                style: 'lockLogo',
-                secureText : true
-            }
-        }
-    }
     
     const [ state,setState ] = useState(INITIAL_STATE)
 

@@ -1,5 +1,17 @@
 import config from '../../utils/config'
 
+const INITIAL_STATE = {
+    userDetails : {
+        userId : {
+            value : '',
+            errMsg : '',
+            placeholder : 'Email/Mobile No.',
+            imageURL: require('../../assests/images/getEmailScreen/personLogo.png'),
+            style: 'personLogo'
+        }
+    },
+}
+
 const handleChange = (state,setState,key,text) =>{
     setState({
         ...state,
@@ -80,4 +92,4 @@ const submit = async (state, setState ) => {
     }
 }
 
-export { handleChange, submit }
+export { INITIAL_STATE, handleChange, submit }

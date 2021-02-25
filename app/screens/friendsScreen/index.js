@@ -1,19 +1,29 @@
 import React , { useState ,useEffect } from 'react'
-import { View , Text, StyleSheet, ActivityIndicator,Image } from 'react-native'
-import { TextInput, TouchableOpacity } from 'react-native-gesture-handler'
-import { FontAwesome } from '@expo/vector-icons'; 
-import { AntDesign } from '@expo/vector-icons'; 
+import { TextInput, TouchableOpacity, View , Text, Image } from 'react-native'
+import { AntDesign,FontAwesome } from '@expo/vector-icons';  
+import AsyncStorage from '@react-native-async-storage/async-storage'
 import styles from './styles'
-import { handleChange, rejectRequest, sendRequest, acceptRequest, getFromStorage, searchFriends } from './utilFunctions'
+import { 
+    handleChange, 
+    rejectRequest, 
+    sendRequest, 
+    acceptRequest, 
+    searchFriends 
+} from './utilFunctions'
 
 const searchFriendsScreen = ({navigation}) =>{
 
-    const [userName, updateName] = useState({
+    const [friendName, updateName] = useState({
         value : '',
         errMsg : ''
     })
-    
-    let user,userEmail,userId
+
+    const [ userData,changeUserData ] = useState({
+        userName : '',
+        userEmail : '',
+        userId : undefined
+    })
+
     const [friendStatus,changeStatus] = useState({
         requested : false,
         status : false,
@@ -22,11 +32,19 @@ const searchFriendsScreen = ({navigation}) =>{
         friendName : '',
         relation : false,
         relationStatus : '',
-        actionId : userId
+        actionId : undefined
     })
 
+    const getUserData = async () => {
+        changeUserData({
+            userName : await AsyncStorage.getItem('@userName'),
+            userEmail : await AsyncStorage.getItem('@userEmail'),
+            userId : Number(await AsyncStorage.getItem('@userId'))
+        })
+    }
+
     useEffect(()=>{
-        user,userEmail,userId = getFromStorage()
+        getUserData()
     },[])
     
     return (
@@ -43,15 +61,15 @@ const searchFriendsScreen = ({navigation}) =>{
                     placeholder = "Email/Mobile"
                     onChangeText = {(text) => handleChange(updateName,text,changeStatus,friendStatus)}
                 />
-                <TouchableOpacity onPress={()=>searchFriends(userName,updateName, friendStatus, changeStatus)}>
+                <TouchableOpacity onPress={()=>searchFriends(userData,friendName,updateName, friendStatus, changeStatus)}>
                     <FontAwesome name="search" size={24} color="gray" />
                 </TouchableOpacity>
             </View>
             <Text style={styles.errorMsg}>
-                {userName.errMsg}
+                {friendName.errMsg}
             </Text>
             {
-                friendStatus.requested && !friendStatus.status && 
+                friendStatus.requested && !friendStatus.status &&
                 <Text style={{...styles.text,alignSelf:'center'}}>
                     No User Found
                 </Text>
@@ -74,7 +92,7 @@ const searchFriendsScreen = ({navigation}) =>{
                             {
                                 !friendStatus.relation && 
                                 <View>
-                                    <TouchableOpacity onPress={() => sendRequest(friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => sendRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Send Request
                                         </Text>
@@ -90,12 +108,12 @@ const searchFriendsScreen = ({navigation}) =>{
                             {
                                 friendStatus.relation && friendStatus.relationStatus=='0' && friendStatus.actionId != userId && 
                                 <View style={{flexDirection : 'row'}}>
-                                    <TouchableOpacity onPress={() => acceptRequest(friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => acceptRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Accept
                                         </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => rejectRequest(friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => rejectRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Reject
                                         </Text>
