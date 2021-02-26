@@ -3,6 +3,7 @@ import { View , Text,Image, ActivityIndicator, BackHandler, Alert } from 'react-
 import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
+import store from '../../store/store'
 
 // http request to fetch user list
 const getData = async (userData,state,changeState) =>{
@@ -39,7 +40,13 @@ const backButtonPressed = () =>{
             text : 'Cancel',
         },
         {
-            text : 'Exit App',onPress : () => BackHandler.exitApp()
+            text : 'Exit App',onPress : () => {
+                store.dispatch({
+                    type : 'LOGGED_OUT',
+                    payload : {}
+                })
+                BackHandler.exitApp()
+            }
         }
     ])
     return true;

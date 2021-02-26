@@ -25,14 +25,14 @@ const signIn = ({route, navigation }) => {
                 Welcome!!
             </Text>
             <Text style={{color:'white',fontSize : 20,marginLeft : 50,marginTop :20}}>
-                {route.params.data}
+                {/* {route.params.data} */}
             </Text>
             <View style={styles.form}>
                 {
                     Object.keys(INITIAL_STATE.userDetails).map( (key) => {
                         const inputObj=state.userDetails[key]
                         return(
-                            <View key={inputObj.email}>
+                            <View key={inputObj.placeholder}>
                                 <View style={styles.inputView}>
                                     <Image
                                         style={styles[inputObj.style]}

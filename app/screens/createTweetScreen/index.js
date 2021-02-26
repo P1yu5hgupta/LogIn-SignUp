@@ -1,27 +1,11 @@
 import React , { useState ,useEffect } from 'react'
 import { View , Text, Image, TouchableOpacity, TextInput } from 'react-native'
 import styles from './styles'
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import { tweet } from './utilsFunctions'
+import store from '../../store/store'
 
 export default createTweet = ({ navigation }) =>{
     const [tweetText, changeText] = useState('')
-    const [ userData,changeUserData ] = useState({
-        userName : '',
-        userEmail : '',
-        userId : undefined
-    })
-      
-    const getUserData = async () => {
-        changeUserData({
-            userName : await AsyncStorage.getItem('@userName'),
-            userEmail : await AsyncStorage.getItem('@userEmail'),
-            userId : Number(await AsyncStorage.getItem('@userId'))
-        })
-    }
-    useEffect(() =>{
-         getUserData()
-    },[])
 
     return (
         <View style={styles.container}>
@@ -30,7 +14,7 @@ export default createTweet = ({ navigation }) =>{
                     Cancel
                 </Text>
                 <TouchableOpacity style={styles.buttonContainer}>
-                    <Text style={styles.buttonText} onPress = {()=>tweet(userData,tweetText, changeText,navigation)}>
+                    <Text style={styles.buttonText} onPress = {()=>tweet(store.getState().userData,tweetText, changeText,navigation)}>
                         Tweet
                     </Text>
                 </TouchableOpacity>

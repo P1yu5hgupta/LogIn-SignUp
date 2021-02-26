@@ -1,4 +1,7 @@
-import config from '../../utils/config'
+import {
+    updatePasswordApi,
+    updateNameApi   
+} from '../../apiCalls/updateProfileApi'
 
 const INITIAL_STATE={
     nameEdit : {
@@ -147,19 +150,7 @@ const handleChange = (editType , key,text, updateState) => {
 const resetPassword = async (userData, state, updateState,navigation)=>{
     if(isValidPasswordFields(state, updateState)){
         try{
-            const response = await fetch(config.url+'/user/update/2',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uid : userData.userId,
-                    currentPassword : state.passwordEdit.currentPassword.value,
-                    newPassword : state.passwordEdit.newPassword.value,
-                })
-            })
-            const data = await response.json()
+            const data = await updatePasswordApi(userData,state)
             if(data.status){
                 alert(data.message)
                 navigation.navigate('Profile')
@@ -177,19 +168,7 @@ const resetPassword = async (userData, state, updateState,navigation)=>{
 const editName = async (userData, state, updateState,navigation) =>{
     if(isValidNameFields(state, updateState)){
         try{
-            const response = await fetch(config.url+'/user/update/1',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    uid : userData.userId,
-                    name : state.nameEdit.name.value,
-                    currentPassword : state.nameEdit.password.value,
-                })
-            })
-            const data = await response.json()
+            const data = await updateNameApi(userData, state)
             if(data.status){
                 alert(data.message)
                 navigation.navigate('Profile')

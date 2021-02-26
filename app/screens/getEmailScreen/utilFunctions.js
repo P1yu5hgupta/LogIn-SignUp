@@ -1,4 +1,4 @@
-import config from '../../utils/config'
+import { verifyEmail } from '../../apiCalls/authenticationApi'
 
 const INITIAL_STATE = {
     userDetails : {
@@ -15,7 +15,7 @@ const INITIAL_STATE = {
 const handleChange = (state,setState,key,text) =>{
     setState({
         ...state,
-        userDetails : {
+        userDetails :{
             ...state.userDetails,
             [key] : {
                 ...state.userDetails[key],
@@ -30,7 +30,7 @@ const isValidFields = (state, setState) =>{
     let flag=true
     let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
     let phoneRegex = /^[6-9]\d{9}$/
-    let type=2
+
     if(state.userDetails.userId.value.length==0){
         setState({
             ...state,
@@ -64,17 +64,7 @@ const isValidFields = (state, setState) =>{
 const submit = async (state, setState ) => {
     if(isValidFields(state, setState)){
         try{
-            const response = await fetch(config.url+'/user/email',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email : state.userDetails.userId.value,
-                })
-            })
-            let data = await response.json()
+            const data = await verifyEmail(state)
             if(!data.status){
                 alert(data.message)
                 setState(INITIAL_STATE)

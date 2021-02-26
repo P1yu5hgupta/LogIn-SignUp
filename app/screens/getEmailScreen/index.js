@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Text, View, TextInput, Image,TouchableOpacity,ScrollView } from 'react-native'
 import styles from './styles'
-import { INITIAL_STATE,handleChange, submit } from './utilFunctions'
+import { INITIAL_STATE, handleChange, submit } from './utilFunctions'
 
 const signIn = ({ navigation }) => {
     
@@ -29,7 +29,7 @@ const signIn = ({ navigation }) => {
                     Object.keys(INITIAL_STATE.userDetails).map( (key) => {
                         const inputObj= state.userDetails[key]
                         return(
-                            <View key={inputObj.value}>
+                            <View key={inputObj.placeholder}>
                                 <View style={styles.inputView}>
                                     <Image
                                         style={styles[inputObj.style]}
@@ -40,7 +40,6 @@ const signIn = ({ navigation }) => {
                                         placeholder= {inputObj.placeholder}
                                         placeholderTextColor = "gray"
                                         onChangeText = {(text)=>handleChange(state,setState,key,text)}
-                                        secureTextEntry = {inputObj.secureText}
                                         value = {inputObj.value}
                                     />
                                 </View>

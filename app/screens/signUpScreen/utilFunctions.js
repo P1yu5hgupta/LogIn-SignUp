@@ -1,3 +1,4 @@
+import { userRegistration } from '../../apiCalls/authenticationApi'
 
 const INITIAL_STATE = {
     userDetails: {
@@ -145,19 +146,7 @@ const isValidFields = (state, setState) =>{
 const submit = async (navigation,state, setState) =>{
     if(isValidFields(state, setState)){
         try{
-            const response = await fetch(config.url+'/user/signup',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    name : state.userDetails.fname.value + ' ' +state.userDetails.lname.value,
-                    email : state.userDetails.email.value,
-                    password : state.userDetails.password.value,
-                })
-            })
-            const data = await response.json()
+            const data = userRegistration(state)
             if(data.status){
                 alert("User registered!! LogIn Now..")
                 setState(INITIAL_STATE)

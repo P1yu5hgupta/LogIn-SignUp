@@ -3,6 +3,7 @@ import { View , Text,TouchableOpacity } from 'react-native'
 import { Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
+import { sendCommentApi } from '../../apiCalls/postsApi'
 
 // http request to fetch user list
 const getComment = async (route,state,changeState) =>{
@@ -49,19 +50,7 @@ const isValidComment = (commentText) => {
 const sendComment = async (route,userData,commentText,updateComment,state,changeState) =>{
     if(isValidComment(commentText)){
         try{
-            const response = await fetch(config.url+'/comments/create',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    tid : route.params.tweetId,
-                    uid : userData.userId,
-                    comment : commentText,
-                })
-            })
-            let data = await response.json()
+            const data = await sendCommentApi(route,userData,commentText)
             if(data.id!=undefined){
                 updateComment('');
                 getComment(state,changeState)
@@ -72,6 +61,7 @@ const sendComment = async (route,userData,commentText,updateComment,state,change
         }
     }
 }
+
 // Rendering Views
 const renderView = (item,state,changeState) =>{
     return (

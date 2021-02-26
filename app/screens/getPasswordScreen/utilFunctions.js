@@ -1,5 +1,5 @@
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import config from '../../utils/config'
+import { authenticateUser } from '../../apiCalls/authenticationApi'
+import store from '../../store/store'
 
 const INITIAL_STATE = {
     userDetails : {
@@ -50,25 +50,19 @@ const isValidFields = (state,setState) =>{
 const submit = async (route,state,setState) => {
     if(isValidFields(state,setState)){
         try{
-            const response = await fetch(config.url+'/user/login',{
-                method: 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    email : route.params.data,
-                    password : state.userDetails.password.value
-                })
-            })
-            let data = await response.json()
+            const data = await authenticateUser(route,state)
             if(!data.status){
                 alert(data.message)
             }
             else{
-                await AsyncStorage.setItem('@userEmail',data.email)
-                await AsyncStorage.setItem('@userName',data.name)
-                await AsyncStorage.setItem('@userId',data.userId.toString())
+                store.dispatch({
+                    type : 'LOGGED_IN',
+                    payload : {
+                        userName : data.name,
+                        userEmail : data.email,
+                        userId : data.userId
+                    }
+                })
                 setState(INITIAL_STATE)
                 navigation.navigate("ShowTweets")
             }

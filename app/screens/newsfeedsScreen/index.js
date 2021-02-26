@@ -1,7 +1,7 @@
 import React , { useState ,useEffect } from 'react'
 import { View, FlatList, BackHandler } from 'react-native'
 import { EvilIcons,Ionicons,AntDesign } from '@expo/vector-icons'; 
-import AsyncStorage from '@react-native-async-storage/async-storage'
+import store from '../../store/store'
 import styles from './styles'
 import { 
     getData, 
@@ -19,27 +19,13 @@ export default userList = ({ navigation }) =>{
 
     const [state,changeState] = useState({data : [{id: 'jhb',user : {name: 'sfsdf'},tweet : 'asdaf',createdAt : 'gfkjn'}], isLoading : false, page: 1,moreAvailable : true })
 
-    const [ userData,changeUserData ] = useState({
-        userName : '',
-        userEmail : '',
-        userId : undefined
-    })
-    const getUserData = async () => {
-        changeUserData({
-            userName : await AsyncStorage.getItem('@userName'),
-            userEmail : await AsyncStorage.getItem('@userEmail'),
-            userId : Number(await AsyncStorage.getItem('@userId'))
-        })
-    }
-
     useEffect(()=>{
-        getUserData()
         BackHandler.addEventListener('hardwareBackPress', backButtonPressed)
         return () => BackHandler.removeEventListener('hardwareBackPress',backButtonPressed)
     },[]);
     
     useEffect(()=>{
-        getData(userData,state,changeState)
+        getData(store.getState().userData,state,changeState)
     },[state.page])
 
     return (
