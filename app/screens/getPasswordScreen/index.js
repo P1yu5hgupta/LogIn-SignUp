@@ -2,9 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Text, View, TextInput, Image,TouchableOpacity, ScrollView } from 'react-native'
 import { handleChange, submit, INITIAL_STATE } from './utilFunctions'
 import styles from './styles'
+import { useSelector,useDispatch } from 'react-redux'
 
 const signIn = ({route, navigation }) => {
-    
+
+    const dispatch = useDispatch()
     const [ state,setState ] = useState(INITIAL_STATE)
 
     return(
@@ -25,7 +27,7 @@ const signIn = ({route, navigation }) => {
                 Welcome!!
             </Text>
             <Text style={{color:'white',fontSize : 20,marginLeft : 50,marginTop :20}}>
-                {/* {route.params.data} */}
+                {route.params.data}
             </Text>
             <View style={styles.form}>
                 {
@@ -57,7 +59,7 @@ const signIn = ({route, navigation }) => {
                 }
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={()=> submit(route,state,setState)}>
+            <TouchableOpacity style={styles.button} onPress={()=> submit(dispatch, route,navigation,state,setState)}>
                 <Text style={styles.buttonText}>
                     Log In
                 </Text>

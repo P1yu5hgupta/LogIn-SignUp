@@ -146,8 +146,9 @@ const isValidFields = (state, setState) =>{
 const submit = async (navigation,state, setState) =>{
     if(isValidFields(state, setState)){
         try{
-            const data = userRegistration(state)
-            if(data.status){
+            const data = await userRegistration(state)
+            console.log(data)
+            if(data.success){
                 alert("User registered!! LogIn Now..")
                 setState(INITIAL_STATE)
                 navigation.navigate('Email')

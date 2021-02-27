@@ -147,16 +147,17 @@ const handleChange = (editType , key,text, updateState) => {
     })) 
 }
 
-const resetPassword = async (userData, state, updateState,navigation)=>{
+const resetPassword = async (userData, state, updateState,changePasswordModal)=>{
     if(isValidPasswordFields(state, updateState)){
         try{
             const data = await updatePasswordApi(userData,state)
-            if(data.status){
-                alert(data.message)
-                navigation.navigate('Profile')
+            console.log(data)
+            if(data.success){
+                updateState(INITIAL_STATE)
+                changePasswordModal(false)
             }
             else{
-                alert(data.message)
+                alert(data.error)
             }
         }
         catch(err){
@@ -165,16 +166,23 @@ const resetPassword = async (userData, state, updateState,navigation)=>{
     }
 }
 
-const editName = async (userData, state, updateState,navigation) =>{
+const editName = async (dispatch, userData, state, updateState,changeNameModal) =>{
     if(isValidNameFields(state, updateState)){
         try{
             const data = await updateNameApi(userData, state)
-            if(data.status){
-                alert(data.message)
-                navigation.navigate('Profile')
+            if(data.success){
+                updateState(INITIAL_STATE)
+                console.log("Hi")
+                await dispatch({
+                    type : 'NAME_UPDATED',
+                    payload : {
+                        updatedName : state.nameEdit.name.value
+                    }
+                })
+                changeNameModal(false)
             }
             else{
-                alert(data.message)
+                alert(data.error)
             }
         }
         catch(err){

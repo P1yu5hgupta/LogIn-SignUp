@@ -53,7 +53,7 @@ const signIn = ({ navigation }) => {
                 }
             </View>
 
-            <TouchableOpacity style={styles.button} onPress={()=>submit(state,setState)}>
+            <TouchableOpacity style={styles.button} onPress={()=>submit(navigation,state,setState)}>
                 <Text style={styles.buttonText}>
                     Next
                 </Text>

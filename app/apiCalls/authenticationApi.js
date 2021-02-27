@@ -19,7 +19,7 @@ const verifyEmail = async (state) => {
     }
 }
 
-const authentiicateUser = async (route,state) =>{
+const authenticateUser = async (route,state) =>{
     try {
         const response = await fetch(config.url+'/user/login',{
             method: 'POST',
@@ -61,6 +61,6 @@ const userRegistration = async (state) =>{
 }
 export {
     verifyEmail,
-    authentiicateUser,
+    authenticateUser,
     userRegistration,
 }

@@ -1,6 +1,6 @@
 import config from '../../utils/config'
 
-const isValidFields = (userName, updateName) =>{
+const isValidFields = (userName, updateName) => {
     let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
     let phoneRegex = /^[6-9]\d{9}$/
     if(userName.value.length==0){
@@ -31,34 +31,34 @@ const searchFriends = async (userData,userName,updateName,friendStatus,changeSta
                 })
             })
             let data = await response.json()
-            if(!data.status){
+            if(!data.success){
                 changeStatus({
                     ...friendStatus,
                     requested : true,
                 })
             }
             else{
-                if(data.data===undefined)
+                if(data.data.data===undefined)
                     changeStatus({
                         ...friendStatus,
                         requested : true,
                         status: true,
-                        friendEmail : data.email,
-                        friendName : data.name,
-                        friendId : data.id,
-                        relation : data.relationshipStatus
+                        friendEmail : data.data.email,
+                        friendName : data.data.name,
+                        friendId : data.data.id,
+                        relation : data.data.relationStatus
                     })
                 else{
                     changeStatus({
                         ...friendStatus,
                         requested : true,
                         status: true,
-                        friendEmail : data.email,
-                        friendName : data.name,
-                        friendId : data.id,
+                        friendEmail : data.data.email,
+                        friendName : data.data.name,
+                        friendId : data.data.id,
                         relation : true,
-                        relationStatus : data.data.status,
-                        actionId : data.data.action_uid
+                        relationStatus : data.data.data.status,
+                        actionId : data.data.data.action_uid
                     })
                 }
             }
@@ -73,11 +73,12 @@ const sendRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendRequest/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
-        if(data.status){
+        if(data.success){
             changeStatus({
                 ...friendStatus,
                 relation : true,
-                relationStatus : '0'
+                relationStatus : '0',
+                actionId : userData.userId
             })
         }
     }
@@ -90,7 +91,7 @@ const acceptRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendAccept/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
-        if(data.status){
+        if(data.success){
             changeStatus({
                 ...friendStatus,
                 relationStatus : '1'
@@ -106,7 +107,7 @@ const rejectRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendReject/'+userData.userId+'/'+friendStatus.friendId)
         let data = await response.json()
-        if(data.status){
+        if(data.success){
             changeStatus({
                 ...friendStatus,
                 relationStatus : '2'

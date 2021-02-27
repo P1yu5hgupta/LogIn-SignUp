@@ -1,8 +1,8 @@
 import React , { useState ,useEffect } from 'react'
 import { TextInput,View , Text,Image, FlatList } from 'react-native'
 import { FontAwesome,EvilIcons,AntDesign } from '@expo/vector-icons';
-import store from '../../store/store'
 import styles from './styles'
+import { useSelector } from 'react-redux'
 import {
     handleRefresh,
     getComment,
@@ -18,10 +18,15 @@ const singleFeed = ({route,navigation}) =>{
     // defining states
     const [state,changeState] = useState({comments : [], isLoading : false, page: 1,moreAvailable : true })
     const [commentText,updateComment] = useState('')
-
+    const userData = useSelector(state => state)
     useEffect(()=>{
         getComment(route,state,changeState)
     },[state.page])
+    
+    useEffect(() => {
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+    },[])
     
     return (
         <View style={styles.container}>
@@ -73,7 +78,7 @@ const singleFeed = ({route,navigation}) =>{
                     onChangeText = {(text)=>updateComment(text)}
                     value = {commentText}
                 />
-                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment(route,store.getState().userData,commentText,updateComment,state,changeState)}/>
+                <FontAwesome name="send" size={24} color="black" onPress = {()=>sendComment(route,userData,commentText,updateComment,state,changeState)}/>
             </View>
         </View>
     )

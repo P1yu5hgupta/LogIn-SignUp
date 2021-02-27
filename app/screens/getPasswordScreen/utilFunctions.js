@@ -1,5 +1,4 @@
 import { authenticateUser } from '../../apiCalls/authenticationApi'
-import store from '../../store/store'
 
 const INITIAL_STATE = {
     userDetails : {
@@ -47,20 +46,21 @@ const isValidFields = (state,setState) =>{
 
     return flag       
 }
-const submit = async (route,state,setState) => {
+const submit = async (dispatch,route,navigation, state,setState) => {
     if(isValidFields(state,setState)){
         try{
             const data = await authenticateUser(route,state)
-            if(!data.status){
-                alert(data.message)
+            console.log(data)
+            if(!data.success){
+                alert(data.error)
             }
             else{
-                store.dispatch({
+                dispatch({
                     type : 'LOGGED_IN',
                     payload : {
-                        userName : data.name,
-                        userEmail : data.email,
-                        userId : data.userId
+                        userName : data.data.name,
+                        userEmail : data.data.email,
+                        userId : data.data.userId
                     }
                 })
                 setState(INITIAL_STATE)

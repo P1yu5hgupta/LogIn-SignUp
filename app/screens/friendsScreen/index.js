@@ -1,8 +1,8 @@
 import React , { useState ,useEffect } from 'react'
 import { TextInput, TouchableOpacity, View , Text, Image } from 'react-native'
 import { AntDesign,FontAwesome } from '@expo/vector-icons';  
-import store from '../../store/store'
 import styles from './styles'
+import { useSelector } from 'react-redux'
 import { 
     handleChange, 
     rejectRequest, 
@@ -29,6 +29,13 @@ const searchFriendsScreen = ({navigation}) =>{
         actionId : undefined
     })
     
+    const userData = useSelector(state => state)
+
+    useEffect(() => {
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+    },[])
+    
     return (
         <View style={styles.container}>
             <TouchableOpacity onPress={()=>navigation.goBack()}>
@@ -43,7 +50,7 @@ const searchFriendsScreen = ({navigation}) =>{
                     placeholder = "Email/Mobile"
                     onChangeText = {(text) => handleChange(updateName,text,changeStatus,friendStatus)}
                 />
-                <TouchableOpacity onPress={()=>searchFriends(store.getState().userData,friendName,updateName, friendStatus, changeStatus)}>
+                <TouchableOpacity onPress={()=>searchFriends(userData,friendName,updateName, friendStatus, changeStatus)}>
                     <FontAwesome name="search" size={24} color="gray" />
                 </TouchableOpacity>
             </View>
@@ -74,7 +81,7 @@ const searchFriendsScreen = ({navigation}) =>{
                             {
                                 !friendStatus.relation && 
                                 <View>
-                                    <TouchableOpacity onPress={() => sendRequest(store.getState().userData,friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => sendRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Send Request
                                         </Text>
@@ -82,20 +89,20 @@ const searchFriendsScreen = ({navigation}) =>{
                                 </View>
                             }
                             {
-                                friendStatus.relation && friendStatus.relationStatus=='0' && friendStatus.actionId == userId && 
+                                friendStatus.relation && friendStatus.relationStatus=='0' && friendStatus.actionId == userData.userId && 
                                 <Text style = {styles.button}>
                                     Requested
                                 </Text>
                             }
                             {
-                                friendStatus.relation && friendStatus.relationStatus=='0' && friendStatus.actionId != userId && 
+                                friendStatus.relation && friendStatus.relationStatus=='0' && friendStatus.actionId != userData.userId && 
                                 <View style={{flexDirection : 'row'}}>
-                                    <TouchableOpacity onPress={() => acceptRequest(store.getState().userData,friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => acceptRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Accept
                                         </Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity onPress={() => rejectRequest(store.getState().userData,friendStatus,changeStatus)}>
+                                    <TouchableOpacity onPress={() => rejectRequest(userData,friendStatus,changeStatus)}>
                                         <Text style = {styles.button}>
                                             Reject
                                         </Text>

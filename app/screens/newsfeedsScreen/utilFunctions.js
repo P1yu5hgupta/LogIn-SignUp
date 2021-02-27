@@ -3,13 +3,13 @@ import { View , Text,Image, ActivityIndicator, BackHandler, Alert } from 'react-
 import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
-import store from '../../store/store'
 
 // http request to fetch user list
 const getData = async (userData,state,changeState) =>{
     try{
-        const response = await fetch(config.url+'/tweets/all/'+userData.userId+'/'+state.page);
+        const response = await fetch(config.url+'/friendship/getTweets/'+userData.userId+'/'+state.page);
         let res = await response.json()
+        res=res.data
         res=res.map(item => (
             {...item,liked : false}
         ))
@@ -34,18 +34,18 @@ const getData = async (userData,state,changeState) =>{
     }
 }
 
-const backButtonPressed = () =>{
+const backButtonPressed = (dispatch,navigation) =>{
     Alert.alert('Heyy!!','Are you Sure??',[
         {
             text : 'Cancel',
         },
         {
-            text : 'Exit App',onPress : () => {
-                store.dispatch({
+            text : 'Log Out',onPress : () => {
+                dispatch({
                     type : 'LOGGED_OUT',
                     payload : {}
                 })
-                BackHandler.exitApp()
+                navigation.navigate('Home')
             }
         }
     ])

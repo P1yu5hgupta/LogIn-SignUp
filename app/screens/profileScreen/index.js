@@ -1,8 +1,8 @@
 import React , { useState, useEffect } from 'react'
 import { View , Text, Image ,Modal, TextInput,TouchableOpacity} from 'react-native'
 import { Feather } from '@expo/vector-icons'; 
-import store from '../../store/store'
 import styles from './styles'
+import { useSelector, useDispatch } from 'react-redux'
 import {
     INITIAL_STATE,
     resetPassword,
@@ -12,9 +12,16 @@ import {
 
 const profile = ({navigation}) =>{
 
+    const userData = useSelector(state => state)
+    const dispatch = useDispatch()
     const [nameModalVisible,changeNameModal] = useState(false)
     const [passwordModalVisible,changePasswordModal] = useState(false)
     const [state, updateState] = useState(INITIAL_STATE)
+    
+    useEffect(() => {
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+    },[])
 
     return (
         <View style={styles.container}>
@@ -32,7 +39,7 @@ const profile = ({navigation}) =>{
             </View>
             <View style={styles.userInfo}>
                 <Text style={styles.nameText}>
-                    { store.getState().userData.userName}
+                    { userData.userName}
                 </Text>
                 <Text style={styles.editText} onPress={()=> changeNameModal(true)}>
                     Edit
@@ -79,7 +86,7 @@ const profile = ({navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => editName(store.getState().userData, state, updateState)}>
+                <TouchableOpacity style={styles.button} onPress={() => editName(dispatch, userData, state, updateState,changeNameModal)}>
                     <Text style={styles.buttonText}>
                         Edit
                     </Text>
@@ -121,7 +128,7 @@ const profile = ({navigation}) =>{
                         })
                     }
                 </View>
-                <TouchableOpacity style={styles.button} onPress={() => resetPassword(store.getState().userData, state, updateState)}>
+                <TouchableOpacity style={styles.button} onPress={() => resetPassword(userData, state, updateState,changePasswordModal)}>
                     <Text style={styles.buttonText}>
                         Reset
                     </Text>

@@ -6,9 +6,12 @@ const tweet = async (userData,tweetText, changeText,navigation) => {
         return
     }
     try{
-        const data = createTweetApi(userData,tweetText)
-        changeText('')
-        navigation.navigate('ShowTweets')
+        const data = await createTweetApi(userData,tweetText)
+        if(data.success){
+            changeText('')
+            navigation.navigate('ShowTweets')
+        }
+        
     }
     catch(err){
         console.log(err)

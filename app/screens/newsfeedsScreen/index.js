@@ -1,9 +1,9 @@
 import React , { useState ,useEffect } from 'react'
 import { View, FlatList, BackHandler } from 'react-native'
-import { EvilIcons,Ionicons,AntDesign } from '@expo/vector-icons'; 
-import store from '../../store/store'
+import { EvilIcons,Ionicons,AntDesign } from '@expo/vector-icons'
+import { useSelector, useDispatch } from 'react-redux'
 import styles from './styles'
-import { 
+import {
     getData, 
     backButtonPressed, 
     handleLoad, 
@@ -16,16 +16,18 @@ import {
 } from './utilFunctions'
 
 export default userList = ({ navigation }) =>{
-
-    const [state,changeState] = useState({data : [{id: 'jhb',user : {name: 'sfsdf'},tweet : 'asdaf',createdAt : 'gfkjn'}], isLoading : false, page: 1,moreAvailable : true })
-
+    const dispatch = useDispatch()
+    const userData = useSelector(state => state)
+    const [state,changeState] = useState({data : [], isLoading : false, page: 1,moreAvailable : true })
     useEffect(()=>{
-        BackHandler.addEventListener('hardwareBackPress', backButtonPressed)
-        return () => BackHandler.removeEventListener('hardwareBackPress',backButtonPressed)
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+        BackHandler.addEventListener('hardwareBackPress', (()=>backButtonPressed(dispatch, navigation)))
+        return () => BackHandler.removeEventListener('hardwareBackPress',(()=>backButtonPressed(dispatch, navigation)))
     },[]);
     
     useEffect(()=>{
-        getData(store.getState().userData,state,changeState)
+        getData(userData,state,changeState)
     },[state.page])
 
     return (

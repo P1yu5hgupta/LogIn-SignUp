@@ -10,6 +10,7 @@ const getComment = async (route,state,changeState) =>{
     try{
         const response = await fetch(config.url+'/comments/tweets/'+route.params.tweetId+'/'+state.page);
         let res = await response.json()
+        res=res.data
         res=res.map(item => (
             {...item,liked : false}
         ))
@@ -20,7 +21,7 @@ const getComment = async (route,state,changeState) =>{
                 isLoading : false,
                 moreAvailable : false
             }))
-        }                
+        }
         else{
             changeState(prevState => ({
                 ... state,
@@ -51,9 +52,9 @@ const sendComment = async (route,userData,commentText,updateComment,state,change
     if(isValidComment(commentText)){
         try{
             const data = await sendCommentApi(route,userData,commentText)
-            if(data.id!=undefined){
-                updateComment('');
-                getComment(state,changeState)
+            if(data.success){
+                updateComment('')
+                getComment(route,state,changeState)
             }
         }
         catch(err){

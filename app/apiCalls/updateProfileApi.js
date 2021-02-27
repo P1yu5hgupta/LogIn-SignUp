@@ -2,6 +2,7 @@ import config from '../utils/config'
 
 const updatePasswordApi = async (userData, state) => {
     try{
+        console.log()
         const response = await fetch(config.url+'/user/update/2',{
             method: 'POST',
             headers: {
@@ -10,8 +11,8 @@ const updatePasswordApi = async (userData, state) => {
             },
             body: JSON.stringify({
                 uid : userData.userId,
-                currentPassword : state.passwordEdit.currentPassword.value,
-                newPassword : state.passwordEdit.newPassword.value,
+                password : state.passwordEdit.currentPassword.value,
+                newpassword : state.passwordEdit.newPassword.value,
             })
         })
         return await response.json()
@@ -32,7 +33,7 @@ const updateNameApi = async (userData, state) => {
             body: JSON.stringify({
                 uid : userData.userId,
                 name : state.nameEdit.name.value,
-                currentPassword : state.nameEdit.password.value,
+                password : state.nameEdit.password.value,
             })
         })
         return await response.json()

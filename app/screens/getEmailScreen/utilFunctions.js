@@ -61,12 +61,12 @@ const isValidFields = (state, setState) =>{
     return flag
 }
 
-const submit = async (state, setState ) => {
+const submit = async (navigation, state, setState ) => {
     if(isValidFields(state, setState)){
         try{
             const data = await verifyEmail(state)
-            if(!data.status){
-                alert(data.message)
+            if(!data.success){
+                alert(data.error)
                 setState(INITIAL_STATE)
                 navigation.navigate("SignUp")
             }

@@ -2,11 +2,16 @@ import React , { useState ,useEffect } from 'react'
 import { View , Text, Image, TouchableOpacity, TextInput } from 'react-native'
 import styles from './styles'
 import { tweet } from './utilsFunctions'
-import store from '../../store/store'
+import { useSelector } from 'react-redux'
 
 export default createTweet = ({ navigation }) =>{
     const [tweetText, changeText] = useState('')
+    const userData = useSelector(state => state)
 
+    useEffect(() => {
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+    },[])
     return (
         <View style={styles.container}>
             <View style={styles.navigationBar} >
@@ -14,7 +19,7 @@ export default createTweet = ({ navigation }) =>{
                     Cancel
                 </Text>
                 <TouchableOpacity style={styles.buttonContainer}>
-                    <Text style={styles.buttonText} onPress = {()=>tweet(store.getState().userData,tweetText, changeText,navigation)}>
+                    <Text style={styles.buttonText} onPress = {()=>tweet(userData,tweetText, changeText,navigation)}>
                         Tweet
                     </Text>
                 </TouchableOpacity>
