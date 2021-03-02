@@ -66,7 +66,7 @@ const submit = async (navigation, state, setState ) => {
         try{
             const data = await verifyEmail(state)
             if(!data.success){
-                alert(data.error)
+                alert('User not registered!!')
                 setState(INITIAL_STATE)
                 navigation.navigate("SignUp")
             }

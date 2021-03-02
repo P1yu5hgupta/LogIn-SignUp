@@ -20,14 +20,15 @@ export default userList = ({ navigation }) =>{
     const userData = useSelector(state => state)
     const [state,changeState] = useState({data : [], isLoading : false, page: 1,moreAvailable : true })
     useEffect(()=>{
-        if(userData.userId === undefined)
-            navigation.navigate('Home')
         BackHandler.addEventListener('hardwareBackPress', (()=>backButtonPressed(dispatch, navigation)))
         return () => BackHandler.removeEventListener('hardwareBackPress',(()=>backButtonPressed(dispatch, navigation)))
     },[]);
     
     useEffect(()=>{
-        getData(userData,state,changeState)
+        if(userData.userId === undefined)
+            navigation.navigate('Home')
+        else
+            getData(userData,state,changeState)
     },[state.page])
 
     return (
@@ -35,7 +36,7 @@ export default userList = ({ navigation }) =>{
             <View style={{flex: 14,backgroundColor: 'gray'}}>
                 <FlatList
                     data = {state.data}
-                    renderItem = {({item})=>renderView(item,state,changeState,navigation)}
+                    renderItem = {({item})=>renderView(userData, item,changeState,navigation)}
                     keyExtractor ={ item => item.id.toString()}
                     ItemSeparatorComponent = {seperatorLine}
                     ListHeaderComponent = {renderHeader}

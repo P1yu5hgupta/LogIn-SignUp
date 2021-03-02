@@ -12,6 +12,7 @@ import {
     renderFinished,
     renderFooter
 } from './utilFunctions'
+import { likeTweet } from '../../apiCalls/postsApi'
 
 const singleFeed = ({route,navigation}) =>{
 
@@ -47,12 +48,13 @@ const singleFeed = ({route,navigation}) =>{
                     </View>
                 </View>
                 <View style={styles.actionTab}>
-                        <View>
-                        <AntDesign 
-                            name={route.params.liked ? 'like1':'like2'} 
-                            size= {20} 
-                            hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                        />
+                        <View style = {{flexDirection : 'row'}}>
+                            <AntDesign
+                                name={route.params.isTweetLikedByMe ? 'like1':'like2'}
+                                size= {20}
+                                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                            />
+                            <Text>{route.params.likesCount}</Text>
                         </View>
                         <View>
                             <EvilIcons name="share-google" size={24} color="black" />
@@ -62,7 +64,7 @@ const singleFeed = ({route,navigation}) =>{
             <View style={styles.commentSection}>
                 <FlatList
                     data = {state.comments}
-                    renderItem = {({item}) => renderView(item,state,changeState)}
+                    renderItem = {({item}) => renderView(userData,item,changeState)}
                     keyExtractor ={ item => item.id.toString()}
                     ItemSeparatorComponent = {seperatorLine}
                     ListFooterComponent = {()=>state.moreAvailable?renderFooter(state,changeState) : renderFinished()}

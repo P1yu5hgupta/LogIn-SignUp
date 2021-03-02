@@ -3,30 +3,34 @@ import { View , Text,Image, ActivityIndicator, BackHandler, Alert } from 'react-
 import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
+import { likeTweet } from '../../apiCalls/postsApi'
 
 // http request to fetch user list
 const getData = async (userData,state,changeState) =>{
     try{
         const response = await fetch(config.url+'/friendship/getTweets/'+userData.userId+'/'+state.page);
         let res = await response.json()
-        res=res.data
-        res=res.map(item => (
-            {...item,liked : false}
-        ))
-        if(res.length<10){
-            changeState(prevState => ({
-                ... state,
-                data : prevState.page==1?  res : [...prevState.data,...res],
-                isLoading : false,
-                moreAvailable : false
-            }))
-        }                
-        else{
-            changeState(prevState => ({
-                ... state,
-                data : prevState.page==1?  res : [...prevState.data,...res], 
-                isLoading: false,
-            }))
+        console.log(res)
+        if(res.success){
+            res=res.data
+            if(res.length<10){
+                changeState(prevState => ({
+                    ... state,
+                    data : prevState.page==1?  res : [...prevState.data,...res],
+                    isLoading : false,
+                    moreAvailable : false
+                }))
+            }
+            else{
+                changeState(prevState => ({
+                    ... state,
+                    data : prevState.page==1?  res : [...prevState.data,...res], 
+                    isLoading: false,
+                }))
+            }
+        }
+        else {
+            console.log(res.error)
         }
     }
     catch(err){
@@ -60,8 +64,9 @@ const handleRefresh = (state,changeState)=>{
     changeState({...state, page: 1,moreAvailable : true})
 }
 
+
 // Rendering Views
-const renderView = (item,state,changeState,navigation) =>{
+const renderView = (userData,item,changeState,navigation) => {
     return (
         <View style = {styles.listItem}>
             <Image
@@ -73,24 +78,15 @@ const renderView = (item,state,changeState,navigation) =>{
                 <Text style={styles.time}>Tweeted On : {item.createdAt.substring(0,10)} at {item.createdAt.substring(11,16)}</Text>
                 <Text style={styles.tweet}>{item.tweet}</Text>
                 <View style={styles.actionTab}>
-                    <View>
+                    <View style = {{flexDirection : 'column'}}>
                     <AntDesign 
-                        name={item.liked ? 'like1':'like2'} 
+                        name={item.isTweetLikedByMe? 'like1':'like2'}
                         size= {20} 
                         hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                        onPress = {()=>{
-                            changeState(prevState =>({
-                                ...prevState,
-                                data : prevState.data.map(userObj =>(
-                                    userObj.id === item.id ?
-                                    {
-                                        ...userObj,
-                                        liked : !item.liked
-                                    } : userObj
-                                ))
-                            }))
-                        }}
+                        onPress = {() => {likeTweet(userData,changeState,item)}}
+                        onLongPress = {() => {reactOnTweet(userData,changeState,item)}}
                     />
+                    <Text style = {{alignSelf : 'center'}}>{item.tweetLikesCount}</Text>
                     </View>
                     <View>
                         <EvilIcons name="comment" size={24} color="black" 
@@ -100,7 +96,8 @@ const renderView = (item,state,changeState,navigation) =>{
                                     tweet : item.tweet,
                                     createdAt : item.createdAt,
                                     name : item.user.name,
-                                    liked : item.liked,
+                                    isTweetLikedByMe : item.isTweetLikedByMe,
+                                    likesCount : item.tweetLikesCount
                                 })
                             }}
                         />

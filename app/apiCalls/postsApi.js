@@ -40,8 +40,42 @@ const sendCommentApi = async (route,userData,commentText) =>{
         console.log(err)
     }
 }
+
+const likeTweet = async (userData,changeState,item) => {
+    let flag = true;
+    changeState(prevState =>({
+        ...prevState,
+        data : prevState.data.map(userObj =>{
+            if(userObj.id === item.id){
+                flag = userObj.isTweetLikedByMe
+                return flag ? 
+                ({
+                    ...userObj,
+                    isTweetLikedByMe : !item.isTweetLikedByMe,
+                    tweetLikesCount : userObj.tweetLikesCount-1
+                }) :
+                ({
+                    ...userObj,
+                    isTweetLikedByMe : !item.isTweetLikedByMe,
+                    tweetLikesCount : userObj.tweetLikesCount+1
+                })
+            } 
+            else{
+                return userObj
+            }
+        })
+    })) 
+    let response = flag ? await fetch(config.url + '/tweetLikes/delete/userid/'+userData.userId+'/tweetid/'+item.id) : 
+                          await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id) 
+
+    response = await response.json()
+    if(!response.success)
+        console.log(response.error)
+}
+
+
 export {
     createTweetApi,
     sendCommentApi,
-
+    likeTweet
 }

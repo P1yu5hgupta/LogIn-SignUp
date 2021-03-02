@@ -8,26 +8,25 @@ import { sendCommentApi } from '../../apiCalls/postsApi'
 // http request to fetch user list
 const getComment = async (route,state,changeState) =>{
     try{
-        const response = await fetch(config.url+'/comments/tweets/'+route.params.tweetId+'/'+state.page);
-        let res = await response.json()
-        res=res.data
-        res=res.map(item => (
-            {...item,liked : false}
-        ))
-        if(res.length<10){
-            changeState(prevState => ({
-                ... state,
-                comments : prevState.page==1?  res : [...prevState.comments,...res],
-                isLoading : false,
-                moreAvailable : false
-            }))
-        }
-        else{
-            changeState(prevState => ({
-                ... state,
-                comments : prevState.page==1?  res : [...prevState.comments,...res], 
-                isLoading: false,
-            }))
+        let res = await fetch(config.url+'/comments/tweets/tweetid/'+route.params.tweetId+'/userid/'+route.params.userId+'/'+state.page);
+        res = await res.json()
+        if(res.success){
+            res=res.data
+            if(res.length<10){
+                changeState(prevState => ({
+                    ... state,
+                    comments : prevState.page==1?  res : [...prevState.comments,...res],
+                    isLoading : false,
+                    moreAvailable : false
+                }))
+            }
+            else{
+                changeState(prevState => ({
+                    ... state,
+                    comments : prevState.page==1?  res : [...prevState.comments,...res], 
+                    isLoading: false,
+                }))
+            }
         }
     }
     catch(err){
@@ -63,8 +62,40 @@ const sendComment = async (route,userData,commentText,updateComment,state,change
     }
 }
 
+const likeComment = async (userData,changeState,item) => {
+    let flag = true;
+    changeState(prevState =>({
+        ...prevState,
+        data : prevState.comments.map(userObj =>{
+            if(userObj.id === item.id){
+                flag = userObj.isCommentLikedByMe
+                return flag ? 
+                ({
+                    ...userObj,
+                    isCommentLikedByMe : !item.isCommentLikedByMe,
+                    commentLikesCount : userObj.commentLikesCount-1
+                }) :
+                ({
+                    ...userObj,
+                    isCommentLikedByMe : !item.isCommentLikedByMe,
+                    commentLikesCount : userObj.commentLikesCount+1
+                })
+            } 
+            else{
+                return userObj
+            }
+        })
+    }))
+    let response = flag ? await fetch(config.url + '/commentLikes/delete/userid/'+userData.userId+'/commentid/'+item.id) : 
+                          await fetch(config.url + '/commentLikes/create/userid/'+userData.userId+'/commentid/'+item.id) 
+
+    response = await response.json()
+    if(!response.success)
+        console.log(response.error)
+}
+
 // Rendering Views
-const renderView = (item,state,changeState) =>{
+const renderView = (userData,item,changeState) =>{
     return (
         <View style = {styles.listItem}>
             <View style={{flex: 10}}>
@@ -75,24 +106,16 @@ const renderView = (item,state,changeState) =>{
                     {item.comment}
                 </Text>
             </View>
-            <AntDesign 
-                style = {{alignSelf : 'flex-end'}}
-                name={item.liked ? 'heart':'hearto'} 
-                size= {15} 
-                hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
-                onPress = {()=>{
-                    changeState(prevState =>({
-                        ...prevState,
-                        comments : prevState.comments.map(userObj =>(
-                            userObj.id === item.id ?
-                            {
-                                ...userObj,
-                                liked : !item.liked
-                            } : userObj
-                        ))
-                    }))
-                }}
-            />
+            <View style = {{flexDirection : 'column'}}>
+                <AntDesign 
+                    style = {{alignSelf : 'flex-end'}}
+                    name={item.isCommentLikedByMe ? 'heart':'hearto'} 
+                    size= {15} 
+                    hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                    onPress = {()=> likeComment(userData,changeState,item) }
+                />
+                <Text style = {{alignSelf : 'center'}}>{item.commentLikesCount}</Text>
+            </View>
         </View>
     );
 }
