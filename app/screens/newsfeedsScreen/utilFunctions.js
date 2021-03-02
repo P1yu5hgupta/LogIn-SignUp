@@ -4,15 +4,22 @@ import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
 import { likeTweet } from '../../apiCalls/postsApi'
+import  { useSelector } from 'react-redux'
 
 // http request to fetch user list
 const getData = async (userData,state,changeState) =>{
     try{
-        const response = await fetch(config.url+'/friendship/getTweets/'+userData.userId+'/'+state.page);
+        const response = await fetch(config.url+'/friendship/getTweets/'+userData.userId+'/'+state.page)
         let res = await response.json()
-        console.log(res)
         if(res.success){
             res=res.data
+            res.map((item) => {
+                item.totalReactCount = item.tweetLikesCount.likeTypeLikeCount + 
+                                        item.tweetLikesCount.likeTypeLoveCount +
+                                        item.tweetLikesCount.likeTypeHappyCount +
+                                        item.tweetLikesCount.likeTypeSadCount +
+                                        item.tweetLikesCount.likeTypeCuriousCount
+            })
             if(res.length<10){
                 changeState(prevState => ({
                     ... state,
@@ -86,7 +93,7 @@ const renderView = (userData,item,changeState,navigation) => {
                         onPress = {() => {likeTweet(userData,changeState,item)}}
                         onLongPress = {() => {reactOnTweet(userData,changeState,item)}}
                     />
-                    <Text style = {{alignSelf : 'center'}}>{item.tweetLikesCount}</Text>
+                    <Text style = {{alignSelf : 'center'}}>{item.totalReactCount}</Text>
                     </View>
                     <View>
                         <EvilIcons name="comment" size={24} color="black" 
@@ -97,7 +104,8 @@ const renderView = (userData,item,changeState,navigation) => {
                                     createdAt : item.createdAt,
                                     name : item.user.name,
                                     isTweetLikedByMe : item.isTweetLikedByMe,
-                                    likesCount : item.tweetLikesCount
+                                    likesCount : item.totalReactCount,
+                                    userId: userData.userId
                                 })
                             }}
                         />

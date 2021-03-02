@@ -20,15 +20,14 @@ const singleFeed = ({route,navigation}) =>{
     const [state,changeState] = useState({comments : [], isLoading : false, page: 1,moreAvailable : true })
     const [commentText,updateComment] = useState('')
     const userData = useSelector(state => state)
+
     useEffect(()=>{
-        getComment(route,state,changeState)
-    },[state.page])
-    
-    useEffect(() => {
         if(userData.userId === undefined)
             navigation.navigate('Home')
-    },[])
-    
+        else
+            getComment(route,state,changeState)
+    },[state.page])
+
     return (
         <View style={styles.container}>
             <View style = {styles.upperSection}>

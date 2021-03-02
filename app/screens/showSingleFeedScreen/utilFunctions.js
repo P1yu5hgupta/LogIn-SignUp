@@ -3,16 +3,24 @@ import { View , Text,TouchableOpacity } from 'react-native'
 import { Ionicons,AntDesign } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
-import { sendCommentApi } from '../../apiCalls/postsApi'
+import { sendCommentApi,likeComment } from '../../apiCalls/postsApi'
 
 // http request to fetch user list
 const getComment = async (route,state,changeState) =>{
     try{
         let res = await fetch(config.url+'/comments/tweets/tweetid/'+route.params.tweetId+'/userid/'+route.params.userId+'/'+state.page);
         res = await res.json()
+        console.log(res)
         if(res.success){
             res=res.data
-            if(res.length<10){
+            res.map((item) => {
+                item.totalReactCount = item.commentLikesCount.likeTypeLikeCount + 
+                                        item.commentLikesCount.likeTypeLoveCount +
+                                        item.commentLikesCount.likeTypeHappyCount +
+                                        item.commentLikesCount.likeTypeSadCount +
+                                        item.commentLikesCount.likeTypeCuriousCount
+            })
+            if(res.length<5){
                 changeState(prevState => ({
                     ... state,
                     comments : prevState.page==1?  res : [...prevState.comments,...res],
@@ -62,38 +70,6 @@ const sendComment = async (route,userData,commentText,updateComment,state,change
     }
 }
 
-const likeComment = async (userData,changeState,item) => {
-    let flag = true;
-    changeState(prevState =>({
-        ...prevState,
-        data : prevState.comments.map(userObj =>{
-            if(userObj.id === item.id){
-                flag = userObj.isCommentLikedByMe
-                return flag ? 
-                ({
-                    ...userObj,
-                    isCommentLikedByMe : !item.isCommentLikedByMe,
-                    commentLikesCount : userObj.commentLikesCount-1
-                }) :
-                ({
-                    ...userObj,
-                    isCommentLikedByMe : !item.isCommentLikedByMe,
-                    commentLikesCount : userObj.commentLikesCount+1
-                })
-            } 
-            else{
-                return userObj
-            }
-        })
-    }))
-    let response = flag ? await fetch(config.url + '/commentLikes/delete/userid/'+userData.userId+'/commentid/'+item.id) : 
-                          await fetch(config.url + '/commentLikes/create/userid/'+userData.userId+'/commentid/'+item.id) 
-
-    response = await response.json()
-    if(!response.success)
-        console.log(response.error)
-}
-
 // Rendering Views
 const renderView = (userData,item,changeState) =>{
     return (
@@ -114,7 +90,7 @@ const renderView = (userData,item,changeState) =>{
                     hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
                     onPress = {()=> likeComment(userData,changeState,item) }
                 />
-                <Text style = {{alignSelf : 'center'}}>{item.commentLikesCount}</Text>
+                <Text style = {{alignSelf : 'center'}}>{item.totalReactCount}</Text>
             </View>
         </View>
     );

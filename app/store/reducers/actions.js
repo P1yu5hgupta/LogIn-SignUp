@@ -1,0 +1,11 @@
+export const logIn = 'LOGGED_IN'
+export const logOut = 'LOGGED_OUT'
+export const nameUpdated = 'NAME_UPDATED'
+export const feedsOnScreen = "TWEETS_FETCHED"
+export const tweetLiked = "TWEET_LIKED"
+export const tweetDisliked = "TWEET_DISLIKED"
+export const removeTweets = "TWEETS_SCREEN_UNMOUNT"
+export const commentsOnScreen = "COMMENTS_FETCHED"
+export const commentLiked = "COMMENT_LIKED"
+export const commentDisliked = "COMMENT_DISLIKED"
+export const removeComments = 'COMMENTS_SCREEN_UNMOUNT'
