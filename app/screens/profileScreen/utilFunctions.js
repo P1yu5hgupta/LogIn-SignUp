@@ -151,7 +151,6 @@ const resetPassword = async (userData, state, updateState,changePasswordModal)=>
     if(isValidPasswordFields(state, updateState)){
         try{
             const data = await updatePasswordApi(userData,state)
-            console.log(data)
             if(data.success){
                 updateState(INITIAL_STATE)
                 changePasswordModal(false)
@@ -172,7 +171,6 @@ const editName = async (dispatch, userData, state, updateState,changeNameModal) 
             const data = await updateNameApi(userData, state)
             if(data.success){
                 updateState(INITIAL_STATE)
-                console.log("Hi")
                 await dispatch({
                     type : 'NAME_UPDATED',
                     payload : {

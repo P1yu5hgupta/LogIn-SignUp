@@ -20,7 +20,7 @@ const App = () => {
     return (
         <Provider store = { store }>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Home">
+                <Stack.Navigator initialRouteName="ShowTweets">
                     <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
                     <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
                     <Stack.Screen name="ShowTweets" component={ShowTweets} options={{headerShown:false}}/>

@@ -41,7 +41,7 @@ const sendCommentApi = async (route,userData,commentText) =>{
     }
 }
 
-const likeTweet = async (userData,changeState,item) => {
+const likeTweet = async (userData,changeState,item,type) => {
     let flag = true;
     changeState(prevState =>({
         ...prevState,
@@ -66,7 +66,7 @@ const likeTweet = async (userData,changeState,item) => {
         })
     }))
     let response = flag ? await fetch(config.url + '/tweetLikes/delete/userid/'+userData.userId+'/tweetid/'+item.id):
-                          await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id+'/likeType/like')
+                          await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id+'/likeType/'+type)
     response = await response.json()
     if(!response.success){
         changeState(prevState =>({

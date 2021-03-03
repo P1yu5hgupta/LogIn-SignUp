@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Text, View, TextInput, Image,TouchableOpacity, ScrollView } from 'react-native'
 import { handleChange, submit, INITIAL_STATE } from './utilFunctions'
 import styles from './styles'
-import { useSelector,useDispatch } from 'react-redux'
+import { useDispatch } from 'react-redux'
 
 const signIn = ({route, navigation }) => {
 

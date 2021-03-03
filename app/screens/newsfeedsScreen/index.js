@@ -12,24 +12,26 @@ import {
     seperatorLine, 
     renderHeader, 
     renderFooter, 
-    renderFinished 
+    renderFinished,
+    fakeData
 } from './utilFunctions'
 
 export default userList = ({ navigation }) =>{
     const dispatch = useDispatch()
     const userData = useSelector(state => state)
-    const [state,changeState] = useState({data : [], isLoading : false, page: 1,moreAvailable : true })
+    const [state,changeState] = useState({data : fakeData, isLoading : false, page: 1, moreAvailable : true })
+
+    // useEffect(()=>{
+    //     if(userData.userId === undefined)
+    //         navigation.navigate('Home')
+    //     else
+    //         getData(userData,state,changeState)
+    // },[state.page])
+ 
     useEffect(()=>{
         BackHandler.addEventListener('hardwareBackPress', (()=>backButtonPressed(dispatch, navigation)))
         return () => BackHandler.removeEventListener('hardwareBackPress',(()=>backButtonPressed(dispatch, navigation)))
     },[]);
-    
-    useEffect(()=>{
-        if(userData.userId === undefined)
-            navigation.navigate('Home')
-        else
-            getData(userData,state,changeState)
-    },[state.page])
 
     return (
         <View style={styles.container}>

@@ -10,7 +10,6 @@ const getComment = async (route,state,changeState) =>{
     try{
         let res = await fetch(config.url+'/comments/tweets/tweetid/'+route.params.tweetId+'/userid/'+route.params.userId+'/'+state.page);
         res = await res.json()
-        console.log(res)
         if(res.success){
             res=res.data
             res.map((item) => {

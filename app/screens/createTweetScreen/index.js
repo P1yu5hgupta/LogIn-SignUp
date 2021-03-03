@@ -12,6 +12,7 @@ export default createTweet = ({ navigation }) =>{
         if(userData.userId === undefined)
             navigation.navigate('Home')
     },[])
+    
     return (
         <View style={styles.container}>
             <View style={styles.navigationBar} >

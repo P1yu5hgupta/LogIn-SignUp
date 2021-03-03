@@ -73,6 +73,22 @@ const styles = StyleSheet.create({
         flexDirection : 'row',
         flex: 1,
         justifyContent: 'space-around',
+    },
+    modalComponent : {
+        backgroundColor : 'white',
+        width : 300,
+        height : 50,
+        alignSelf : 'center',
+        borderRadius : 8,
+        flexDirection : 'row',
+        justifyContent : 'space-evenly',
+        alignItems : 'center'
+    },
+    modalView : {
+        backgroundColor: 'black',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxHeight : 20
     }
 })
 

@@ -50,7 +50,6 @@ const submit = async (dispatch,route,navigation, state,setState) => {
     if(isValidFields(state,setState)){
         try{
             const data = await authenticateUser(route,state)
-            console.log(data)
             if(!data.success){
                 alert(data.error)
             }
