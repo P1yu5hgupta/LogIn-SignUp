@@ -47,7 +47,7 @@ const singleFeed = ({route,navigation}) =>{
                     </View>
                 </View>
                 <View style={styles.actionTab}>
-                        <View style = {{flexDirection : 'row'}}>
+                        <View style = {{flexDirection : 'column',alignItems : 'center'}}>
                             <AntDesign
                                 name={route.params.isTweetLikedByMe ? 'like1':'like2'}
                                 size= {20}

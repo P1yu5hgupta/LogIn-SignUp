@@ -46,6 +46,7 @@ const isValidFields = (state,setState) =>{
 
     return flag       
 }
+
 const submit = async (dispatch,route,navigation, state,setState) => {
     if(isValidFields(state,setState)){
         try{
@@ -54,12 +55,12 @@ const submit = async (dispatch,route,navigation, state,setState) => {
                 alert(data.error)
             }
             else{
-                dispatch({
+                await dispatch({
                     type : 'LOGGED_IN',
                     payload : {
                         userName : data.data.name,
                         userEmail : data.data.email,
-                        userId : data.data.userId
+                        userId : Number(data.data.userId)
                     }
                 })
                 setState(INITIAL_STATE)
@@ -71,5 +72,6 @@ const submit = async (dispatch,route,navigation, state,setState) => {
         }
     }
 }
+
 
 export { INITIAL_STATE, handleChange, submit }

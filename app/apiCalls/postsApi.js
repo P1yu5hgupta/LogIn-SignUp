@@ -1,5 +1,6 @@
 import config from '../utils/config'
 
+// API call for creating a tweet which is done by the loggedIn user
 const createTweetApi = async (userData,tweetText) => {
     try{
         const response = await fetch(config.url+'/tweets/create',{
@@ -20,6 +21,7 @@ const createTweetApi = async (userData,tweetText) => {
     }
 }
 
+// API call for adding a comment on particular tweet which is done by the loggedIn user
 const sendCommentApi = async (route,userData,commentText) =>{
     try {
         const response = await fetch(config.url+'/comments/create',{
@@ -41,6 +43,7 @@ const sendCommentApi = async (route,userData,commentText) =>{
     }
 }
 
+// API call for liking a particular tweet by loggedIn user
 const likeTweet = async (userData,changeState,item,type) => {
     let flag = true;
     changeState(prevState =>({
@@ -52,12 +55,16 @@ const likeTweet = async (userData,changeState,item,type) => {
                 ({
                     ...userObj,
                     isTweetLikedByMe : !item.isTweetLikedByMe,
-                    totalReactCount : userObj.totalReactCount-1
+                    totalReactCount : userObj.totalReactCount-1,
+                    likeType : undefined,
+                    modalView : false
                 }) :
                 ({
                     ...userObj,
                     isTweetLikedByMe : !item.isTweetLikedByMe,
-                    totalReactCount : userObj.totalReactCount+1
+                    totalReactCount : userObj.totalReactCount+1,
+                    likeType : type,
+                    modalView : false
                 })
             } 
             else{
@@ -69,31 +76,11 @@ const likeTweet = async (userData,changeState,item,type) => {
                           await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id+'/likeType/'+type)
     response = await response.json()
     if(!response.success){
-        changeState(prevState =>({
-            ...prevState,
-            data : prevState.data.map(userObj =>{
-                if(userObj.id === item.id){
-                    flag = userObj.isTweetLikedByMe
-                    return flag ? 
-                    ({
-                        ...userObj,
-                        isTweetLikedByMe : !item.isTweetLikedByMe,
-                        totalReactCount : userObj.totalReactCount-1
-                    }) :
-                    ({
-                        ...userObj,
-                        isTweetLikedByMe : !item.isTweetLikedByMe,
-                        totalReactCount : userObj.totalReactCount+1
-                    })
-                } 
-                else{
-                    return userObj
-                }
-            })
-        }))
+        console.log(response.error)
     }
 }
 
+// API call for liking a particular comment on a particular tweet by loggedIn user
 const likeComment = async (userData,changeState,item) => {
     let flag = true;
     changeState(prevState =>({
@@ -122,28 +109,43 @@ const likeComment = async (userData,changeState,item) => {
                           await fetch(config.url + '/commentLikes/create/userid/'+userData.userId+'/commentid/'+item.id+'/likeType/like')
     response = await response.json()
     if(!response.success){
-        changeState(prevState =>({
-            ...prevState,
-            data : prevState.data.map(userObj =>{
-                if(userObj.id === item.id){
-                    flag = userObj.isTweetLikedByMe
-                    return flag ? 
-                    ({
-                        ...userObj,
-                        isTweetLikedByMe : !item.isTweetLikedByMe,
-                        totalReactCount : userObj.totalReactCount-1
-                    }) :
-                    ({
-                        ...userObj,
-                        isTweetLikedByMe : !item.isTweetLikedByMe,
-                        totalReactCount : userObj.totalReactCount+1
-                    })
-                } 
-                else{
-                    return userObj
-                }
-            })
-        }))
+        console.log(response.error)
+    }
+}
+
+// API call for reacting on tweet by loggedIn user
+const reactOnTweet = async (userData,changeState,item,type) => {
+    changeState(prevState =>({
+        ...prevState,
+        data : prevState.data.map(userObj =>{
+            if(userObj.id === item.id){
+                flag = userObj.isTweetLikedByMe
+                return flag ?  // check if user already liked the tweet or not
+                ({ 
+                    ...userObj,
+                    isTweetLikedByMe : true,
+                    likeType : type,
+                    modalView : false
+                }) :
+                ({
+                    ...userObj,
+                    isTweetLikedByMe : true,
+                    totalReactCount : userObj.totalReactCount+1,
+                    likeType : type,
+                    modalView : false
+                })
+            } 
+            else{
+                return userObj
+            }
+        })
+    }))
+    if(flag && item.likeType !== type){
+        let response = await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id+'/likeType/'+type)
+        response = await response.json()
+        if(!response.success){
+            console.log(response.error)
+        }
     }
 }
 
@@ -151,5 +153,6 @@ export {
     createTweetApi,
     sendCommentApi,
     likeTweet,
-    likeComment
+    likeComment,
+    reactOnTweet
 }

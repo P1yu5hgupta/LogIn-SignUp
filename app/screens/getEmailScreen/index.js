@@ -4,7 +4,6 @@ import styles from './styles'
 import { INITIAL_STATE, handleChange, submit } from './utilFunctions'
 
 const signIn = ({ navigation }) => {
-    
     const [state,setState] = useState(INITIAL_STATE)
     
     return(

@@ -1,5 +1,6 @@
 import config from '../../utils/config'
 
+// Validating the Email/Mobile No. entered by user while searching for friends
 const isValidFields = (userName, updateName) => {
     let mailRegex=/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
     let phoneRegex = /^[6-9]\d{9}$/
@@ -16,6 +17,7 @@ const isValidFields = (userName, updateName) => {
     return true
 }
 
+// Handling function for searching a friend on platform
 const searchFriends = async (userData,userName,updateName,friendStatus,changeStatus)=>{
     if(isValidFields(userName, updateName)){
         try{
@@ -69,6 +71,7 @@ const searchFriends = async (userData,userName,updateName,friendStatus,changeSta
     }
 }
 
+// Handling function for sending a request to a friend
 const sendRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendRequest/'+userData.userId+'/'+friendStatus.friendId)
@@ -87,6 +90,7 @@ const sendRequest = async (userData,friendStatus,changeStatus) =>{
     }
 }
 
+// Handling function which is called after user click on accept friend request
 const acceptRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendAccept/'+userData.userId+'/'+friendStatus.friendId)
@@ -103,6 +107,7 @@ const acceptRequest = async (userData,friendStatus,changeStatus) =>{
     }
 }
 
+// Handling function which is called after user click on reject friend request
 const rejectRequest = async (userData,friendStatus,changeStatus) =>{
     try{
         const response = await fetch(config.url+'/friendship/friendReject/'+userData.userId+'/'+friendStatus.friendId)
@@ -119,6 +124,7 @@ const rejectRequest = async (userData,friendStatus,changeStatus) =>{
     }
 }
 
+// handling function of TextInput to get email/mobile of friend to be searched by user
 const handleChange = (updateName,text,changeStatus,friendStatus) =>{
     updateName({
         value : text,
@@ -129,6 +135,7 @@ const handleChange = (updateName,text,changeStatus,friendStatus) =>{
         requested : false
     })
 }
+
 
 export { 
     handleChange, 

@@ -1,5 +1,6 @@
 import config from '../utils/config'
 
+// API call for updating the password of the loggedIn account
 const updatePasswordApi = async (userData, state) => {
     try{
         console.log()
@@ -22,6 +23,7 @@ const updatePasswordApi = async (userData, state) => {
     }
 }
 
+// API call for updating the name of loggedIn user
 const updateNameApi = async (userData, state) => {
     try{
         const response = await fetch(config.url+'/user/update/1',{

@@ -1,5 +1,6 @@
 import { createTweetApi } from '../../apiCalls/postsApi'
 
+// Handling function for adding a tweet by user
 const tweet = async (userData,tweetText, changeText,navigation) => {
     if(tweetText.length==0){
         alert('Please write something....')
@@ -11,7 +12,6 @@ const tweet = async (userData,tweetText, changeText,navigation) => {
             changeText('')
             navigation.navigate('ShowTweets')
         }
-        
     }
     catch(err){
         console.log(err)

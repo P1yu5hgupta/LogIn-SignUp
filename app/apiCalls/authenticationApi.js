@@ -1,5 +1,6 @@
 import config from '../utils/config'
 
+// API call for verifying the email entered by user
 const verifyEmail = async (state) => {
     try{
         const response = await fetch(config.url+'/user/email',{
@@ -19,6 +20,7 @@ const verifyEmail = async (state) => {
     }
 }
 
+// API call for matching the entered credentials for login the user
 const authenticateUser = async (route,state) =>{
     try {
         const response = await fetch(config.url+'/user/login',{
@@ -39,6 +41,7 @@ const authenticateUser = async (route,state) =>{
     }
 }
 
+// API call for making an entry of a user who is signing Up to platform
 const userRegistration = async (state) =>{
     try {
         const response = await fetch(config.url+'/user/signup',{
@@ -59,6 +62,8 @@ const userRegistration = async (state) =>{
         console.log(err)
     }
 }
+
+
 export {
     verifyEmail,
     authenticateUser,

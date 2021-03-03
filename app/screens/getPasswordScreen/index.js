@@ -5,7 +5,6 @@ import styles from './styles'
 import { useDispatch } from 'react-redux'
 
 const signIn = ({route, navigation }) => {
-
     const dispatch = useDispatch()
     const [ state,setState ] = useState(INITIAL_STATE)
 
