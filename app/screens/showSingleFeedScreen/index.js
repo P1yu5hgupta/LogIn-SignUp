@@ -53,7 +53,7 @@ const singleFeed = ({route,navigation}) =>{
                                 size= {20}
                                 hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
                             />
-                            <Text>{route.params.likesCount}</Text>
+                            {/* <Text>{route.params.likesCount}</Text> */}
                         </View>
                         <View>
                             <EvilIcons name="share-google" size={24} color="black" />

@@ -5,6 +5,7 @@ import config from '../../utils/config'
 import styles from './styles'
 import { likeTweet, reactOnTweet } from '../../apiCalls/postsApi'
 import Modal from 'react-native-modal'
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
 // http request to fetch user list
 const getData = async (userData,state,changeState) =>{
@@ -130,13 +131,16 @@ const renderView = (userData,item,changeState,navigation) => {
                     <Text style={styles.tweet}>{item.tweet}</Text>
                     <View style={styles.actionTab}>
                         <View style = {{flexDirection : 'column'}}>
-                        <Ionicons 
-                            name={item.isTweetLikedByMe? typeMap[item.likeType] : 'heart-outline'}
-                            size= {20}
-                            hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                        <TouchableOpacity
                             onPress = {() => {likeTweet(userData,changeState,item,'like')}}
                             onLongPress = {() => changeModalVisibility(item, changeState)}
-                        />
+                            delayLongPress = {200}>
+                                <Ionicons 
+                                    name={item.isTweetLikedByMe? reactionType[item.likeType] : 'heart-outline'}
+                                    size= {20}
+                                    hitSlop={{top: 20, bottom: 20, left: 20, right: 20}}
+                                />
+                        </TouchableOpacity>
                         <Text style = {{alignSelf : 'center'}}>{item.totalReactCount}</Text>
                         </View>
                         <View>
@@ -166,17 +170,18 @@ const renderView = (userData,item,changeState,navigation) => {
                     deviceWidth = {Dimensions.get('screen').width}
                     coverScreen = {false}
                     animationIn = 'fadeInLeft'
-                    animationOut = 'fadeOutRight'>
+                    animationOut = 'fadeOutRight'
+                    animationInTiming = {400}>
                         <View style={styles.modalComponent}>
                             {
                                 Object.keys(reactionType).map((reaction) => {
                                     return (
                                         <Ionicons 
                                             key = {reaction}
-                                            name={reactionType[key]} 
+                                            name={reactionType[reaction]} 
                                             size={30} 
                                             color="black" 
-                                            onPress={() => reactOnTweet(userData,changeState,item,key)}
+                                            onPress={() => reactOnTweet(userData,changeState,item,reaction)}
                                         />
                                     )
                                 })

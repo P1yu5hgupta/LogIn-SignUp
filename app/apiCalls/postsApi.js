@@ -140,7 +140,7 @@ const reactOnTweet = async (userData,changeState,item,type) => {
             }
         })
     }))
-    if(flag && item.likeType !== type){
+    if(item.likeType !== type){
         let response = await fetch(config.url + '/tweetLikes/create/userid/'+userData.userId+'/tweetid/'+item.id+'/likeType/'+type)
         response = await response.json()
         if(!response.success){
