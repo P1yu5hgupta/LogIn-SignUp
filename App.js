@@ -12,6 +12,9 @@ import CreateTweet from './app/screens/createTweetScreen/index'
 import Profile from './app/screens/profileScreen/index'
 import SingleTweet from './app/screens/showSingleFeedScreen/index'
 import SearchFriend from './app/screens/friendsScreen/index'
+import Iframe from './app/screens/iframeScreen/iframe'
+import ExtraUtils from './app/screens/iframeScreen/index'
+import FriendRequest from './app/screens/friendRequestScreen/index'
 
 const Stack = createStackNavigator();
 const store = getStore()
@@ -20,7 +23,7 @@ const App = () => {
     return (
         <Provider store = { store }>
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Home">
+                <Stack.Navigator initialRouteName="ShowTweets">
                     <Stack.Screen name="Home" component={Home} options={{headerShown:false}}/>
                     <Stack.Screen name="SignUp" component={SignUp} options={{headerShown:false}}/>
                     <Stack.Screen name="ShowTweets" component={ShowTweets} options={{headerShown:false}}/>
@@ -30,6 +33,9 @@ const App = () => {
                     <Stack.Screen name="Profile" component={Profile} options={{headerShown:false}}/>
                     <Stack.Screen name="SingleTweet" component={SingleTweet} options={{headerShown:false}}/>
                     <Stack.Screen name="SearchFriends" component={SearchFriend} options={{headerShown:false}}/>
+                    <Stack.Screen name="FriendRequest" component={FriendRequest} options={{headerShown:false}}/>
+                    <Stack.Screen name="Iframe" component={Iframe} options={{headerShown:false}}/>
+                    <Stack.Screen name="ExtraUtils" component={ExtraUtils} options={{headerShown:false}}/>
                 </Stack.Navigator>
             </NavigationContainer>
           </Provider>

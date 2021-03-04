@@ -119,7 +119,7 @@ const reactOnTweet = async (userData,changeState,item,type) => {
         ...prevState,
         data : prevState.data.map(userObj =>{
             if(userObj.id === item.id){
-                flag = userObj.isTweetLikedByMe
+                let flag = userObj.isTweetLikedByMe
                 return flag ?  // check if user already liked the tweet or not
                 ({ 
                     ...userObj,
@@ -149,10 +149,45 @@ const reactOnTweet = async (userData,changeState,item,type) => {
     }
 }
 
+const getAllFriendRequest = async (userId) => {
+    try {
+        const response = await fetch(config.url+'/friendship/all/friendRequest',{
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userid : userId
+            })
+        })
+        return await response.json()
+    }
+    catch(err){
+        console.log(err)
+    }
+}
+
+const searchForFriends = async (userData,userName) => {
+    const response = await fetch(config.url+'/user/search',{
+        method : 'POST',
+        headers: {
+            Accept: 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body : JSON.stringify({
+            email : userName.value,
+            uid : userData.userId
+        })
+    })
+    return await response.json()
+}
 export {
     createTweetApi,
     sendCommentApi,
     likeTweet,
     likeComment,
-    reactOnTweet
+    reactOnTweet,
+    getAllFriendRequest,
+    searchForFriends
 }

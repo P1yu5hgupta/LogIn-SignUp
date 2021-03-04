@@ -1,4 +1,5 @@
 import config from '../../utils/config'
+import { searchForFriends } from '../../apiCalls/postsApi'
 
 // Validating the Email/Mobile No. entered by user while searching for friends
 const isValidFields = (userName, updateName) => {
@@ -21,18 +22,8 @@ const isValidFields = (userName, updateName) => {
 const searchFriends = async (userData,userName,updateName,friendStatus,changeStatus)=>{
     if(isValidFields(userName, updateName)){
         try{
-            const response = await fetch(config.url+'/user/search',{
-                method : 'POST',
-                headers: {
-                    Accept: 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body : JSON.stringify({
-                    email : userName.value,
-                    uid : userData.userId
-                })
-            })
-            let data = await response.json()
+            let data = await searchForFriends(userData,userName)
+            console.log(data)
             if(!data.success){
                 changeStatus({
                     ...friendStatus,

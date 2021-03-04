@@ -1,4 +1,4 @@
-import React,{ useState, useEffect } from 'react';
+import React,{ useEffect } from 'react';
 import { Text, View, Image, TouchableOpacity, BackHandler } from 'react-native';
 import styles from './styles'
 import { backButtonPressed } from './utilFunctions'

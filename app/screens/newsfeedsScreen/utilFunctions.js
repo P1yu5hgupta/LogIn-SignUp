@@ -1,14 +1,14 @@
 import React from 'react'
 import { View , Text,Image, ActivityIndicator, Alert, Dimensions } from 'react-native'
-import { EvilIcons, Ionicons,AntDesign } from '@expo/vector-icons';
+import { EvilIcons, Ionicons } from '@expo/vector-icons';
 import config from '../../utils/config'
 import styles from './styles'
 import { likeTweet, reactOnTweet } from '../../apiCalls/postsApi'
 import Modal from 'react-native-modal'
-import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
 // http request to fetch user list
-const getData = async (userData,state,changeState) =>{
+const getData = async (userData,state,changeState,dispatch) =>{
     try{
         const response = await fetch(config.url+'/friendship/getTweets/'+userData.userId+'/'+state.page)
         let res = await response.json()
@@ -22,19 +22,29 @@ const getData = async (userData,state,changeState) =>{
                                         item.tweetLikesCount.likeTypeCuriousCount
                 item.modalView = false
             })
+            if(state.page==1){
+                dispatch({
+                    type : 'TWEETS_FETCHED',
+                    payload : {
+                        data : res
+                    }
+                })
+            }
             if(res.length<10){
                 changeState(prevState => ({
-                    ... state,
+                    ...state,
                     data : prevState.page==1?  res : [...prevState.data,...res],
                     isLoading : false,
-                    moreAvailable : false
+                    moreAvailable : false,
+                    skeleton :false
                 }))
             }
             else{
                 changeState(prevState => ({
-                    ... state,
+                    ...state,
                     data : prevState.page==1?  res : [...prevState.data,...res], 
                     isLoading: false,
+                    skeleton : false
                 }))
             }
         }

@@ -12,7 +12,7 @@ import {
 
 const profile = ({navigation}) =>{
 
-    const userData = useSelector(state => state)
+    const userData = useSelector(state => state.userData)
     const dispatch = useDispatch()
     const [nameModalVisible,changeNameModal] = useState(false)
     const [passwordModalVisible,changePasswordModal] = useState(false)
@@ -50,6 +50,9 @@ const profile = ({navigation}) =>{
                         Change Password
                     </Text>
                 </TouchableOpacity>
+                <Text style={styles.editText} onPress={()=> navigation.navigate('FriendRequest')}>
+                    Friend Requests
+                </Text>
             </View>
             {/* Update Screens */}
             <Modal visible = {nameModalVisible} style = {styles.modalView} animationType='slide'>

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux'
 
 export default createTweet = ({ navigation }) =>{
     const [tweetText, changeText] = useState('')
-    const userData = useSelector(state => state)
+    const userData = useSelector(state => state.userData)
 
     useEffect(() => {
         if(userData.userId === undefined)

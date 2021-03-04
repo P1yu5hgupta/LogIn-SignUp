@@ -29,7 +29,7 @@ const searchFriendsScreen = ({navigation}) =>{
         actionId : undefined
     })
     
-    const userData = useSelector(state => state)
+    const userData = useSelector(state => state.userData)
 
     useEffect(() => {
         if(userData.userId === undefined)

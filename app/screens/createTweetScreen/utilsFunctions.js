@@ -12,6 +12,10 @@ const tweet = async (userData,tweetText, changeText,navigation) => {
             changeText('')
             navigation.navigate('ShowTweets')
         }
+        else {
+            changeText('')
+            alert('Something Went Wrong!!!!')
+        }
     }
     catch(err){
         console.log(err)

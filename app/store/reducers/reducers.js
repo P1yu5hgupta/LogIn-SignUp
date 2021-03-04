@@ -13,9 +13,12 @@ import {
 } from './actions'
 
 const INITIAL_STATE = {
-    userName : '',
-    userEmail : '',
-    userId : undefined
+    userData : {
+        userName : '',
+        userEmail : '',
+        userId : undefined
+    },
+    feeds : []
 }
 
 const reducer = ( state = INITIAL_STATE, action ) => {
@@ -23,20 +26,26 @@ const reducer = ( state = INITIAL_STATE, action ) => {
         case logIn :
             return {
                 ...state,
-                userName : action.payload.userName,
-                userEmail : action.payload.userEmail,
-                userId : action.payload.userId
+                userData : {
+                    userName : action.payload.userName,
+                    userEmail : action.payload.userEmail,
+                    userId : action.payload.userId
+                }
             }
         case logOut :
             return INITIAL_STATE
         case nameUpdated : 
             return {
                 ...state,
-                userName : action.payload.updatedName
+                userData : {
+                    ...state.userData,
+                    userName : action.payload.updatedName
+                }
             }
         case feedsOnScreen :
             return {
-                
+                ...state,
+                feeds : action.payload.data
             }
         case tweetLiked :
             return {

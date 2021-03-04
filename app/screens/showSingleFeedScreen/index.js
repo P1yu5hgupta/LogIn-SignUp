@@ -12,14 +12,13 @@ import {
     renderFinished,
     renderFooter
 } from './utilFunctions'
-import { likeTweet } from '../../apiCalls/postsApi'
 
 const singleFeed = ({route,navigation}) =>{
 
     // defining states
     const [state,changeState] = useState({comments : [], isLoading : false, page: 1,moreAvailable : true })
     const [commentText,updateComment] = useState('')
-    const userData = useSelector(state => state)
+    const userData = useSelector(state => state.userData)
 
     useEffect(()=>{
         if(userData.userId === undefined)

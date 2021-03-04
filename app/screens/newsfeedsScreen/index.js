@@ -9,22 +9,25 @@ import {
     handleLoad, 
     handleRefresh, 
     renderView, 
+    renderFooter,
     seperatorLine, 
     renderHeader, 
-    renderFooter, 
     renderFinished 
 } from './utilFunctions'
+import SkeletonPlaceholder from '../../utils/skeletonPlaceholder'
 
 const newsfeeds = ({ navigation }) =>{
     const dispatch = useDispatch()
-    const userData = useSelector(state => state)
-    const [state,changeState] = useState({data : [], isLoading : false, page: 1, moreAvailable : true })
+    const globalState = useSelector(state => state)
+    const userData = globalState.userData
+    const feeds = globalState.feeds
+    const [state,changeState] = useState({data : feeds, isLoading : false, page: 1, moreAvailable : true,skeleton : true })
     
     useEffect(()=>{
         if(userData.userId === undefined)
             navigation.navigate('Home')
         else
-            getData(userData,state,changeState)
+            getData(userData,state,changeState,dispatch)
     },[state.page])
 
     useEffect(()=>{
@@ -41,7 +44,7 @@ const newsfeeds = ({ navigation }) =>{
                     keyExtractor ={ item => item.id.toString()}
                     ItemSeparatorComponent = {seperatorLine}
                     ListHeaderComponent = {renderHeader}
-                    ListFooterComponent = {state.moreAvailable?renderFooter : renderFinished}
+                    ListFooterComponent = {state.moreAvailable?(state.page==1?SkeletonPlaceholder:renderFooter) : renderFinished}
                     stickyHeaderIndices={[0]}
                     onRefresh = {()=>handleRefresh(state,changeState)}
                     refreshing = {state.isLoading}
